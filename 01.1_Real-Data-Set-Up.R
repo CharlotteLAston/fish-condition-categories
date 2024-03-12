@@ -39,8 +39,38 @@ full.data <- lengths %>%
 setwd(data_dir)
 saveRDS(full.data, "Pilbara_data")
 
+#### Western King Wrasse #####
 
+dat <- readRDS("australian-synthesis_complete_length.RDS") %>% 
+  filter(length <= 400) %>% 
+  mutate(ID = row_number())
 
+mps <- st_read("Rottnest_Sanctuaries.shp") %>% 
+  st_transform(gdacrs)
+
+plot(mps$geometry)
+
+sp.dat <- st_as_sf(dat, coords=c("longitude", "latitude")) 
+gdacrs <- "+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_defs"
+st_crs(sp.dat) <- gdacrs
+plot(sp.dat$geometry, add=T)
+
+NTZ_points <- st_intersection(sp.dat, mps) %>% 
+  mutate(status = "NTZ") %>% 
+  dplyr::select(ID, status) %>% 
+  st_drop_geometry()
+
+dat <- dat %>% 
+  left_join(., NTZ_points, by="ID") %>% 
+  mutate(status.x = ifelse(!is.na(status.y), status.y, status.x)) %>% 
+  mutate(status.x = ifelse(is.na(status.x), "Fished", status.x)) %>%  # anything that didn't intersect is in the fished zone
+  dplyr::select(!status.y)
+
+dat <- dat %>% 
+  rename(status = "status.x")
+
+setwd(data_dir)
+saveRDS(dat, "Western-King-Wrasse_Status")
 
 
 

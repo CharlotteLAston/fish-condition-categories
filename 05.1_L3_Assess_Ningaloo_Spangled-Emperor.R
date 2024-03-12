@@ -46,6 +46,8 @@ InitL50 = 400
 InitDelta = 100
 params = c(InitFishMort_logit, log(InitL50), log(InitDelta))
 DistnType = 1
+ObsRetCatchFreqAtLen = Res$ObsRetCatchFreqAtLen
+
 FittedRes=GetLengthBasedCatchCurveResults(params, DistnType, GrowthCurveType, GrowthParams, RefnceAges, MLL, SelectivityType, ObsRetCatchFreqAtLen,
                                           lbnd, ubnd, midpt, SelectivityVec, PropReleased, ObsDiscCatchFreqAtLen, DiscMort, CVSizeAtAge, MaxAge, NatMort, TimeStep)
 FittedRes$ResultsSummary
