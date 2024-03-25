@@ -79,7 +79,8 @@ data_dir <- paste(working.dir, "Data", sep="/")
 setwd(data_dir)
 
 dat <- readRDS("Pilbara_Data") %>% 
-  filter(Species %in% "sebae")
+  filter(Species %in% "sebae") %>% 
+  filter(Status %in% "Fished")
 
 head(dat)
 range(dat$Length)

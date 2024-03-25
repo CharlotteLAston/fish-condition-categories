@@ -72,12 +72,13 @@ PlotLengthBasedCatchCurve_RetCatch(params, DistnType, MLL, SelectivityType, ObsR
 # ***************************
 working.dir <- dirname(rstudioapi::getActiveDocumentContext()$path)
 data_dir <- paste(working.dir, "Data", sep="/")
+fig_dir <- paste(working.dir, "Figures", sep="/")
 
 setwd(data_dir)
-dat <- readRDS("2021-05_Abrolhos_BOSS-BRUV_dat_length.rds") %>% 
-  filter(scientific %in% "Lethrinidae Lethrinus miniatus") %>% 
-  filter(!is.na(length)) %>% 
-  dplyr::select(sample, length, status)
+dat <- readRDS("australian-synthesis_complete_length_lethrinus_miniatus.rds") %>% 
+  dplyr::filter_all(.vars_predicate = any_vars(str_detect(.,"Abrolhos.MF|Abrolhos.WAMSI|05_Abrolhos_stereo"))) %>% 
+  filter(length<=MaxLen)
+
 
 head(dat)
 range(dat$length)
@@ -102,13 +103,20 @@ InitDelta = 100
 params = c(InitFishMort_logit, log(InitL50), log(InitDelta))
 DistnType = 1
 ObsDiscCatchFreqAtLen = NA # (or set to Res$ObsDiscCatchFreqAtLen)
+CVSizeAtAge = 0.05
 
 FittedRes=GetLengthBasedCatchCurveResults(params, DistnType, GrowthCurveType, GrowthParams, RefnceAges, MLL, SelectivityType, ObsRetCatchFreqAtLen,
                                           lbnd, ubnd, midpt, SelectivityVec, PropReleased, ObsDiscCatchFreqAtLen, DiscMort, CVSizeAtAge, MaxAge, NatMort, TimeStep)
 
 FittedRes$ResultsSummary
-PlotLengthBasedCatchCurve_RetCatch(params, DistnType, MLL, SelectivityType, ObsRetCatchFreqAtLen, lbnd, ubnd, midpt,
-                                   SelectivityVec, PropReleased, ObsDiscCatchFreqAtLen, DiscMort, GrowthCurveType, GrowthParams,
-                                   RefnceAges, MaxAge, NatMort, TimeStep, MainLabel=NA,
-                                   xaxis_lab=NA, yaxis_lab=NA, xmax=800, xint=50,
-                                   ymax=0.5, yint=0.1, PlotCLs=TRUE, FittedRes, nReps=200)
+
+setwd(fig_dir)
+jpeg(file="Catch-Curve_L-miniatus.jpeg")
+X_PlotLengthBasedCatchCurve_RetCatch(params, DistnType, MLL, SelectivityType, ObsRetCatchFreqAtLen, lbnd, ubnd, midpt,
+                                     SelectivityVec, PropReleased, ObsDiscCatchFreqAtLen, DiscMort, GrowthCurveType, GrowthParams,
+                                     RefnceAges, MaxAge, NatMort, TimeStep, MainLabel=NA,
+                                     xaxis_lab=NA, yaxis_lab="Proportion (observed)", xmax=800, xint=50,
+                                     ymax=0.5, yint=0.1, PlotCLs=TRUE, FittedRes, nReps=200, Error.Colour = "#FB8072")
+dev.off()
+
+
