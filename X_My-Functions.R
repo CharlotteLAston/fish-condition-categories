@@ -172,7 +172,9 @@ X_PlotLengthBasedCatchCurve_RetCatch <- function(params, DistnType, MLL, Selecti
   # inverse logit transformed value
   params = res$params # from point estimate, not from resampled values
   Fval = round(1/(1+exp(-params[1])),2)
-  Fest = bquote("F =" ~ .(Fval) ~ y^-1)
+  uprbnd <- res$ParamEst[1,3]
+  lwrbnd <- res$ParamEst[1,2]
+  Fest = bquote("F =" ~ .(Fval) ~ y^-1 ~"("*.(lwrbnd)~"-"~.(uprbnd) ~ y^-1*")")
   if (SelectivityType==1) {
     legend("topright", pch=-1, legend=as.expression(Fest),
            lty="solid",col="black", bty='n', cex=0.8,lwd=-1, y.intersp=1.2, adj=0)
@@ -188,5 +190,24 @@ X_PlotLengthBasedCatchCurve_RetCatch <- function(params, DistnType, MLL, Selecti
   
   par(.pardefault)
   
+  
+  to.plot <- cbind(ExpCatchAtLen, ObsRelCatchAtLen) %>% 
+    as.data.frame() %>% 
+    pivot_longer(everything(.), names_to="Obs.Est", values_to="Prop") %>% 
+    group_by(Obs.Est) %>% 
+    mutate(midpoint = midpt) %>% 
+    ungroup()
+  
+  params.for.plot <- list()
+  
+  params.for.plot[["ExpCatchAtLen"]] <- ExpCatchAtLen
+  params.for.plot[["ObsRelCatchAtLen"]] <- ObsRelCatchAtLen
+  params.for.plot[["plotting.points"]] <- to.plot
+  params.for.plot[["x"]] <- x
+  params.for.plot[["y"]] <- y
+  params.for.plot[["Fest"]] <- Fest
+  
+  
+  return(params.for.plot)
 }
 

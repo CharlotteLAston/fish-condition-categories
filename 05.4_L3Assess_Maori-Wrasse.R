@@ -98,7 +98,7 @@ InitDelta = 60
 params = c(InitFishMort_logit, log(InitL50), log(InitDelta))
 DistnType = 1
 ObsDiscCatchFreqAtLen = NA # (or set to Res$ObsDiscCatchFreqAtLen)
-CVSizeAtAge = 0.1#0.025
+CVSizeAtAge = 0.05#0.025
 TimeStep = 0.5
 
 FittedRes=GetLengthBasedCatchCurveResults(params, DistnType, GrowthCurveType, GrowthParams, RefnceAges, MLL, SelectivityType, ObsRetCatchFreqAtLen,
@@ -106,14 +106,28 @@ FittedRes=GetLengthBasedCatchCurveResults(params, DistnType, GrowthCurveType, Gr
 
 FittedRes$ResultsSummary
 
-setwd(fig_dir)
-jpeg(file="Catch-Curve_O-lineolatus_Metro.jpeg")
-X_PlotLengthBasedCatchCurve_RetCatch(params, DistnType, MLL, SelectivityType, ObsRetCatchFreqAtLen, lbnd, ubnd, midpt,
+
+plotting <- X_PlotLengthBasedCatchCurve_RetCatch(params, DistnType, MLL, SelectivityType, ObsRetCatchFreqAtLen, lbnd, ubnd, midpt,
                                      SelectivityVec, PropReleased, ObsDiscCatchFreqAtLen, DiscMort, GrowthCurveType, GrowthParams,
                                      RefnceAges, MaxAge, NatMort, TimeStep, MainLabel=NA,
-                                     xaxis_lab=NA, yaxis_lab="Proportion (observed)", xmax=400, xint=50,
-                                     ymax=0.5, yint=0.1, PlotCLs=TRUE, FittedRes, nReps=200, Error.Colour = "#B3DE69")
-dev.off()
+                                     xaxis_lab=NA, yaxis_lab="Proportion (observed)", xmax=MaxLen, xint=50,
+                                     ymax=0.5, yint=0.1, PlotCLs=TRUE, FittedRes, nReps=200, Error.Colour = "#FFED6F")
+
+plot.label = deparse1(bquote(.(plotting$Fest)))
+
+good.plot <- ggplot()+
+  geom_polygon(aes(x=plotting$x, y=plotting$y), colour=NA, fill="#FFED6F")+
+  geom_point(aes(y=plotting$plotting.points$Prop, x=plotting$plotting.points$midpoint, 
+                 shape=plotting$plotting.points$Obs.Est, group=plotting$plotting.points$Obs.Est), colour="grey20")+
+  scale_shape_manual(values = c(1,19), name=NULL, label=c("Estimate", "Observed"))+
+  xlab("Length (mm)")+
+  ylab("Proportion in length class")+
+  ggplot2::annotate("text", x=100, y=0.3, parse=T, label=as.character(plot.label))+
+  theme_classic()
+good.plot
+
+setwd(fig_dir)
+ggsave(good.plot, filename="Catch-Curve_O-lineolatus_Metro.png", height = a4.width*1, width = a4.width, units  ="mm", dpi = 300 )
 
 #* Capes ####
 
@@ -155,11 +169,25 @@ FittedRes=GetLengthBasedCatchCurveResults(params, DistnType, GrowthCurveType, Gr
 
 FittedRes$ResultsSummary
 
-setwd(fig_dir)
-jpeg(file="Catch-Curve_O-lineolatus_Capes.jpeg")
-X_PlotLengthBasedCatchCurve_RetCatch(params, DistnType, MLL, SelectivityType, ObsRetCatchFreqAtLen, lbnd, ubnd, midpt,
+
+plotting <- X_PlotLengthBasedCatchCurve_RetCatch(params, DistnType, MLL, SelectivityType, ObsRetCatchFreqAtLen, lbnd, ubnd, midpt,
                                      SelectivityVec, PropReleased, ObsDiscCatchFreqAtLen, DiscMort, GrowthCurveType, GrowthParams,
                                      RefnceAges, MaxAge, NatMort, TimeStep, MainLabel=NA,
                                      xaxis_lab=NA, yaxis_lab="Proportion (observed)", xmax=400, xint=50,
                                      ymax=0.5, yint=0.1, PlotCLs=TRUE, FittedRes, nReps=200, Error.Colour = "#FEB461")
-dev.off()
+
+plot.label = deparse1(bquote(.(plotting$Fest)))
+
+good.plot <- ggplot()+
+  geom_polygon(aes(x=plotting$x, y=plotting$y), colour=NA, fill="#FEB461")+
+  geom_point(aes(y=plotting$plotting.points$Prop, x=plotting$plotting.points$midpoint, 
+                 shape=plotting$plotting.points$Obs.Est, group=plotting$plotting.points$Obs.Est), colour="grey20")+
+  scale_shape_manual(values = c(1,19), name=NULL, label=c("Estimate", "Observed"))+
+  xlab("Length (mm)")+
+  ylab("Proportion in length class")+
+  ggplot2::annotate("text", x=100, y=0.3, parse=T, label=as.character(plot.label))+
+  theme_classic()
+good.plot
+
+setwd(fig_dir)
+ggsave(good.plot, filename="Catch-Curve_O-lineolatus_Capes.png", height = a4.width*1, width = a4.width, units  ="mm", dpi = 300 )

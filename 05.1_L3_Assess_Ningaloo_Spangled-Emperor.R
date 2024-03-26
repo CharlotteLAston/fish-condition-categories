@@ -1,8 +1,11 @@
 rm(list=ls())
 devtools::install_github("SAlexHesp/L3AssessRPackage", build_vignettes=TRUE, force=TRUE)
 library(L3Assess)
+library(tidyr)
 library(dplyr)
 library(stringr)
+
+a4.width=160
 
 # Simulate data
 SampleSize=5000 # sample size for retained catches (and same number for released fish, if an MLL is specified)
@@ -98,13 +101,35 @@ FittedRes=GetLengthBasedCatchCurveResults(params, DistnType, GrowthCurveType, Gr
 
 FittedRes$ResultsSummary
 
-
 setwd(fig_dir)
 jpeg(file="Catch-Curve_L-nebulosus.jpeg")
-X_PlotLengthBasedCatchCurve_RetCatch(params, DistnType, MLL, SelectivityType, ObsRetCatchFreqAtLen, lbnd, ubnd, midpt,
+plotting <- X_PlotLengthBasedCatchCurve_RetCatch(params, DistnType, MLL, SelectivityType, ObsRetCatchFreqAtLen, lbnd, ubnd, midpt,
                                    SelectivityVec, PropReleased, ObsDiscCatchFreqAtLen, DiscMort, GrowthCurveType, GrowthParams,
                                    RefnceAges, MaxAge, NatMort, TimeStep, MainLabel=NA,
                                    xaxis_lab=NA, yaxis_lab="Proportion (observed)", xmax=800, xint=50,
                                    ymax=0.5, yint=0.1, PlotCLs=TRUE, FittedRes, nReps=200, Error.Colour = "#BEBBDA")
-dev.off()
+
+
+plot.label = deparse1(bquote(.(plotting$Fest)))
+
+good.plot <- ggplot()+
+  geom_polygon(aes(x=plotting$x, y=plotting$y), colour=NA, fill="#BEBBDA")+
+  geom_point(aes(y=plotting$plotting.points$Prop, x=plotting$plotting.points$midpoint, 
+                 shape=plotting$plotting.points$Obs.Est, group=plotting$plotting.points$Obs.Est), colour="grey20")+
+  scale_shape_manual(values = c(1,19), name=NULL, label=c("Estimate", "Observed"))+
+  xlab("Length (mm)")+
+  ylab("Proportion in length class")+
+  ggplot2::annotate("text", x=200, y=0.275, parse=T, label=as.character(plot.label))+
+  theme_classic()
+good.plot
+
+setwd(fig_dir)
+ggsave(good.plot, filename="Catch-Curve_L-nebulosus.png", height = a4.width*1, width = a4.width, units  ="mm", dpi = 300 )
+
+
+
+
+
+
+
 

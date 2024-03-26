@@ -90,15 +90,15 @@ RefnceAges = NA
 
 dat <- readRDS("australian-synthesis_complete_length_chrysophrys_auratus.RDS") %>% 
   filter(length<MaxLen) %>% 
-  dplyr::filter_all(.vars_predicate = any_vars(str_detect(.,"2009|2010|2011"))) %>% 
+  dplyr::filter_all(.vars_predicate = any_vars(str_detect(.,"2008|2009|2010|2011"))) %>% 
   # dplyr::filter_all(.vars_predicate = any_vars(str_detect(.,"Capes|Geographe|SwC|south-west|Ngari")))
   # dplyr::filter_all(.vars_predicate = any_vars(str_detect(.,"Abrolhos"))) 
-  dplyr::filter_all(.vars_predicate = any_vars(str_detect(.,"Marmion|TwoRocks|Two.Rocks|Capes|Geographe|SwC|south-west|Ngari|Warnbro"))) %>% 
-  dplyr::filter(!str_detect(campaign, "Perth.Canyon|Rottnest|Geographe"))
+  dplyr::filter_all(.vars_predicate = any_vars(str_detect(.,"Marmion|TwoRocks|Two.Rocks|Capes|Geographe|SwC|south-west|Ngari|Warnbro|Rottnest"))) %>% 
+  dplyr::filter(!str_detect(campaign, "Perth.Canyon|Geographe"))
 
 head(dat)
 range(dat$length)
-LenInterval = 50
+LenInterval = 40
 LenCats <- seq(from=0, to=MaxLen, by=LenInterval)
 LenCats
 
@@ -120,18 +120,34 @@ InitDelta = 150
 params = c(InitFishMort_logit, log(InitL50), log(InitDelta))
 DistnType = 1
 ObsDiscCatchFreqAtLen = NA # (or set to Res$ObsDiscCatchFreqAtLen)
-CVSizeAtAge = 0.075
+CVSizeAtAge = 0.05
 
 FittedRes=GetLengthBasedCatchCurveResults(params, DistnType, GrowthCurveType, GrowthParams, RefnceAges, MLL, SelectivityType, ObsRetCatchFreqAtLen,
                                           lbnd, ubnd, midpt, SelectivityVec, PropReleased, ObsDiscCatchFreqAtLen, DiscMort, CVSizeAtAge, MaxAge, NatMort, TimeStep)
 
 FittedRes$ResultsSummary
 
-setwd(fig_dir)
-jpeg(file="Catch-Curve_C-auratus.jpeg")
-X_PlotLengthBasedCatchCurve_RetCatch(params, DistnType, MLL, SelectivityType, ObsRetCatchFreqAtLen, lbnd, ubnd, midpt,
+
+plotting <- X_PlotLengthBasedCatchCurve_RetCatch(params, DistnType, MLL, SelectivityType, ObsRetCatchFreqAtLen, lbnd, ubnd, midpt,
                                    SelectivityVec, PropReleased, ObsDiscCatchFreqAtLen, DiscMort, GrowthCurveType, GrowthParams,
                                    RefnceAges, MaxAge, NatMort, TimeStep, MainLabel=NA,
-                                   xaxis_lab=NA, yaxis_lab="Proportion (observed)", xmax=1500, xint=50,
+                                   xaxis_lab=NA, yaxis_lab="Proportion (observed)", xmax=1200, xint=50,
                                    ymax=0.5, yint=0.1, PlotCLs=TRUE, FittedRes, nReps=200, Error.Colour = "#80B1D4")
-dev.off()
+
+plot.label = deparse1(bquote(.(plotting$Fest)))
+
+good.plot <- ggplot()+
+  geom_polygon(aes(x=plotting$x, y=plotting$y), colour=NA, fill="#80B1D4")+
+  geom_point(aes(y=plotting$plotting.points$Prop, x=plotting$plotting.points$midpoint, 
+                 shape=plotting$plotting.points$Obs.Est, group=plotting$plotting.points$Obs.Est), colour="grey20")+
+  scale_shape_manual(values = c(1,19), name=NULL, label=c("Estimate", "Observed"))+
+  xlab("Length (mm)")+
+  ylab("Proportion in length class")+
+  ggplot2::annotate("text", x=300, y=0.3, parse=T, label=as.character(plot.label))+
+  theme_classic()
+good.plot
+
+setwd(fig_dir)
+ggsave(good.plot, filename="Catch-Curve_C-auratus.png", height = a4.width*1, width = a4.width, units  ="mm", dpi = 300 )
+
+

@@ -18,13 +18,13 @@ a4.width <- 160
 MaxAge = 30
 TimeStep = 1 
 NatMort = 4.22/MaxAge
-FishMort = 1.5 * NatMort
+FishMort = 0.27
 MaxLen = 800
 LenInc = 20
 MLL=NA 
 SelectivityType = 2 # 1=selectivity inputted as vector, 2=asymptotic logistic selectivity curve
 SelectivityVec = NA # selectivity vector
-SelParams = c(391, 182)  # bruv curve
+SelParams = c(388, 185)  # bruv curve
 
 RetenParams = c(NA, NA) 
 DiscMort = 0 
@@ -45,7 +45,7 @@ InitDelta = 100
 
 params = c(InitFishMort_logit, log(InitL50), log(InitDelta))
 
-samplesize <-  c(100,250,500,750,1000,1500,2000,3000,5000,7500,10000)
+samplesize <-  c(100,250,500,750,1000,1500,2000,3000,4000,5000,6000)
 
 results <- as.data.frame(array(0, dim=c(length(samplesize), 3)))
 
@@ -103,13 +103,13 @@ ggsave(Spango_Sample_Size, filename="Sample-Size_L-nebulosus.png", height = a4.w
 MaxAge = 30
 TimeStep = 1 # model timestep (e.g. 1 = annual, 1/12 = monthly)
 NatMort = 4.22/MaxAge
-FishMort = 1.5 * NatMort
+FishMort = 0.26
 MaxLen = 700
 LenInc = 20
 MLL=NA # (minimum legal length) # retention set to 1 for all lengths if MLL set to NA and retention parameters not specified
 SelectivityType=2 # 1=selectivity inputted as vector, 2=asymptotic logistic selectivity curve
 SelectivityVec = NA # selectivity vector
-SelParams = c(391, 150) # L50, L95-L50 for gear selectivity
+SelParams = c(343, 116) # L50, L95-L50 for gear selectivity
 RetenParams = c(NA, NA) # L50, L95-L50 for retention
 DiscMort = 0 # proportion of fish that die due to natural mortality
 
@@ -136,7 +136,7 @@ InitDelta = 100
 params = c(InitFishMort_logit, log(InitL50), log(InitDelta))
 DistnType = 1
 
-samplesize <-  c(100,250,500,750,1000,1500,2000,3000,5000,7500,10000)
+samplesize <-  c(100,250,500,750,1000,1500,2000,3000,4000,5000,6000)
 
 results <- as.data.frame(array(0, dim=c(length(samplesize), 3)))
 
@@ -193,13 +193,11 @@ ggsave(RedThroat_Sample_Size, filename="Sample-Size_L-miniatus.png", height = a4
 MaxAge = 8.5 #https://onlinelibrary.wiley.com/doi/10.1111/j.1095-8649.2012.03446.x
 TimeStep = 0.5 # model timestep (e.g. 1 = annual, 1/12 = monthly)
 NatMort = 4.22/MaxAge
-FishMort = 0.16#1.5 * NatMort
 MaxLen = 400
 LenInc = 20
 MLL=NA # (minimum legal length) # retention set to 1 for all lengths if MLL set to NA and retention parameters not specified
 SelectivityType=2 # 1=selectivity inputted as vector, 2=asymptotic logistic selectivity curve
 SelectivityVec = NA # selectivity vector
-SelParams = c(80, 50) # L50, L95-L50 for gear selectivity
 RetenParams = c(NA, NA) # L50, L95-L50 for retention
 DiscMort = 0 # proportion of fish that die due to natural mortality
 
@@ -215,6 +213,8 @@ RefnceAges = NA
 
 #* Abrolhos ####
 # fit catch curve to simulated data
+FishMort = 0.04 #1.5 * NatMort
+SelParams = c(85, 53) # L50, L95-L50 for gear selectivity
 ObsDiscCatchFreqAtLen = NA # (or set to Res$ObsDiscCatchFreqAtLen)
 PropReleased = NA # proportion of fish released, vector including mean and sd (option probably now obsolete)
 length(ObsRetCatchFreqAtLen)
@@ -226,7 +226,7 @@ InitDelta = 53
 params = c(InitFishMort_logit, log(InitL50), log(InitDelta))
 DistnType = 1
 
-samplesize <-  c(100,250,500,750,1000,1500,2000,3000,5000,7500,10000)
+samplesize <-  c(100,250,500,750,1000,1500,2000,3000,4000,5000,6000)
 
 results <- as.data.frame(array(0, dim=c(length(samplesize), 3)))
 
@@ -272,69 +272,70 @@ WKW_Sample_Size_Abrolhos
 setwd(fig_dir)
 ggsave(WKW_Sample_Size_Abrolhos , filename="Sample-Size_C-auricularis_Abrolhos.png", height = a4.width*1, width = a4.width, units  ="mm", dpi = 300 )
 
-#* Capes ####
-
-CVSizeAtAge = 0.075
-
-# fit catch curve to simulated data
-ObsDiscCatchFreqAtLen = NA # (or set to Res$ObsDiscCatchFreqAtLen)
-PropReleased = NA # proportion of fish released, vector including mean and sd (option probably now obsolete)
-length(ObsRetCatchFreqAtLen)
-length(midpt)
-InitFishMort = 0.26 # specify starting parameters
-InitFishMort_logit = log(InitFishMort/(1-InitFishMort)) # logit transform
-InitL50 = 217
-InitDelta = 21
-params = c(InitFishMort_logit, log(InitL50), log(InitDelta))
-DistnType = 1
-
-samplesize <-  c(100,250,500,750,1000,1500,2000,3000,5000,7500,10000)
-
-results <- as.data.frame(array(0, dim=c(length(samplesize), 3)))
-
-for(i in 1:length(samplesize)) {
-  SampleSize = samplesize[i]
-  Res_sim=SimLenAndAgeFreqData(SampleSize, MaxAge, TimeStep, NatMort, FishMort, MaxLen, LenInc, MLL, SelectivityType,
-                               SelParams, RetenParams, SelectivityVec, DiscMort, GrowthCurveType, GrowthParams, RefnceAges, CVSizeAtAge)
-  
-  ObsRetCatchFreqAtLen = Res_sim$ObsRetCatchFreqAtLen
-  midpt=Res_sim$midpt
-  lbnd=Res_sim$lbnd
-  ubnd=Res_sim$ubnd
-  
-  Results_sim=GetLengthBasedCatchCurveResults(params, DistnType, GrowthCurveType, GrowthParams, RefnceAges, MLL, SelectivityType, ObsRetCatchFreqAtLen,
-                                              lbnd, ubnd, midpt, SelectivityVec, PropReleased, ObsDiscCatchFreqAtLen, DiscMort, CVSizeAtAge, MaxAge, NatMort, TimeStep)
-  Est <- Results_sim$ParamEst[1,1]
-  uprbnd <- Results_sim$ParamEst[1,3]
-  lwrbnd <- Results_sim$ParamEst[1,2]
-  Results <- data.frame(Est,uprbnd,lwrbnd)
-  
-  results[i, ] <- Results
-  
-}
-
-results$samplesize <- samplesize
-
-results.WKW <- results %>% 
-  rename(
-    Fmort = V1,
-    upperbnd = V2,
-    lowerbnd = V3)
-
-WKW_Sample_Size_Capes <- results.WKW %>% 
-  ggplot() +
-  geom_point(aes(x=samplesize, y=Fmort))+
-  geom_errorbar(aes(x=samplesize, y=Fmort ,ymin=lowerbnd, ymax=upperbnd))+
-  theme_classic()+
-  ylab("Estimate of fishing mortality")+
-  xlab("Sample size")+
-  geom_vline(xintercept = 2227, colour="#8DD3C7", linetype="dashed", linewidth=1)
-WKW_Sample_Size_Capes 
-
-setwd(fig_dir)
-ggsave(WKW_Sample_Size_Capes , filename="Sample-Size_C-auricularis_Capes.png", height = a4.width*1, width = a4.width, units  ="mm", dpi = 300 )
-
-#* Metro ####
+# #* Capes ####
+# 
+# CVSizeAtAge = 0.075
+# 
+# # fit catch curve to simulated data
+# ObsDiscCatchFreqAtLen = NA # (or set to Res$ObsDiscCatchFreqAtLen)
+# PropReleased = NA # proportion of fish released, vector including mean and sd (option probably now obsolete)
+# length(ObsRetCatchFreqAtLen)
+# length(midpt)
+# FishMort = 0.16 #1.5 * NatMort
+# InitFishMort = 0.26 # specify starting parameters
+# InitFishMort_logit = log(InitFishMort/(1-InitFishMort)) # logit transform
+# InitL50 = 217
+# InitDelta = 21
+# params = c(InitFishMort_logit, log(InitL50), log(InitDelta))
+# DistnType = 1
+# 
+# samplesize <-  c(100,250,500,750,1000,1500,2000,3000,5000)
+# 
+# results <- as.data.frame(array(0, dim=c(length(samplesize), 3)))
+# 
+# for(i in 1:length(samplesize)) {
+#   SampleSize = samplesize[i]
+#   Res_sim=SimLenAndAgeFreqData(SampleSize, MaxAge, TimeStep, NatMort, FishMort, MaxLen, LenInc, MLL, SelectivityType,
+#                                SelParams, RetenParams, SelectivityVec, DiscMort, GrowthCurveType, GrowthParams, RefnceAges, CVSizeAtAge)
+#   
+#   ObsRetCatchFreqAtLen = Res_sim$ObsRetCatchFreqAtLen
+#   midpt=Res_sim$midpt
+#   lbnd=Res_sim$lbnd
+#   ubnd=Res_sim$ubnd
+#   
+#   Results_sim=GetLengthBasedCatchCurveResults(params, DistnType, GrowthCurveType, GrowthParams, RefnceAges, MLL, SelectivityType, ObsRetCatchFreqAtLen,
+#                                               lbnd, ubnd, midpt, SelectivityVec, PropReleased, ObsDiscCatchFreqAtLen, DiscMort, CVSizeAtAge, MaxAge, NatMort, TimeStep)
+#   Est <- Results_sim$ParamEst[1,1]
+#   uprbnd <- Results_sim$ParamEst[1,3]
+#   lwrbnd <- Results_sim$ParamEst[1,2]
+#   Results <- data.frame(Est,uprbnd,lwrbnd)
+#   
+#   results[i, ] <- Results
+#   
+# }
+# 
+# results$samplesize <- samplesize
+# 
+# results.WKW <- results %>% 
+#   rename(
+#     Fmort = V1,
+#     upperbnd = V2,
+#     lowerbnd = V3)
+# 
+# WKW_Sample_Size_Capes <- results.WKW %>% 
+#   ggplot() +
+#   geom_point(aes(x=samplesize, y=Fmort))+
+#   geom_errorbar(aes(x=samplesize, y=Fmort ,ymin=lowerbnd, ymax=upperbnd))+
+#   theme_classic()+
+#   ylab("Estimate of fishing mortality")+
+#   xlab("Sample size")+
+#   geom_vline(xintercept = 2227, colour="#8DD3C7", linetype="dashed", linewidth=1)
+# WKW_Sample_Size_Capes 
+# 
+# setwd(fig_dir)
+# ggsave(WKW_Sample_Size_Capes , filename="Sample-Size_C-auricularis_Capes.png", height = a4.width*1, width = a4.width, units  ="mm", dpi = 300 )
+# 
+# #* Metro ####
 
 CVSizeAtAge = 0.05
 
@@ -343,14 +344,16 @@ ObsDiscCatchFreqAtLen = NA # (or set to Res$ObsDiscCatchFreqAtLen)
 PropReleased = NA # proportion of fish released, vector including mean and sd (option probably now obsolete)
 length(ObsRetCatchFreqAtLen)
 length(midpt)
-InitFishMort = 0.26 # specify starting parameters
+FishMort = 0.23
+SelParams = c(74, 35) # L50, L95-L50 for gear selectivity
+InitFishMort = 0.23 # specify starting parameters
 InitFishMort_logit = log(InitFishMort/(1-InitFishMort)) # logit transform
 InitL50 = 76
 InitDelta = 36
 params = c(InitFishMort_logit, log(InitL50), log(InitDelta))
 DistnType = 1
 
-samplesize <-  c(100,250,500,750,1000,1500,2000,3000,5000,7500,10000)
+samplesize <-  c(100,250,500,750,1000,1500,2000,3000,4000,5000,6000)
 
 results <- as.data.frame(array(0, dim=c(length(samplesize), 3)))
 
@@ -409,6 +412,8 @@ MLL=NA # (minimum legal length) # retention set to 1 for all lengths if MLL set 
 SelectivityType=2 # 1=selectivity inputted as vector, 2=asymptotic logistic selectivity curve
 SelectivityVec = NA # selectivity vector
 DiscMort = 0 # proportion of fish that die due to natural mortality
+FishMort = 0.23
+SelParams = c(230, 52) # L50, L95-L50 for gear selectivity
 
 CVSizeAtAge = 0.075
 
@@ -432,7 +437,8 @@ InitDelta = 20
 params = c(InitFishMort_logit, log(InitL50), log(InitDelta))
 DistnType = 1
 
-samplesize <-  c(100,250,500,750,1000,1500,2000,3000,5000,7500,10000)
+samplesize <-  c(100,250,500,750,1000,1500,2000,3000,4000,5000,6000)
+
 
 results <- as.data.frame(array(0, dim=c(length(samplesize), 3)))
 
@@ -467,7 +473,7 @@ results.snapper <- results %>%
 
 # results1
 
-#* Plot red throat sample sizes ####
+#* Plot pink snapper sample sizes ####
 
 PinkSnapper_Sample_Size <- results.snapper %>% 
   ggplot() +
@@ -476,7 +482,7 @@ PinkSnapper_Sample_Size <- results.snapper %>%
   theme_classic()+
   ylab("Estimate of fishing mortality")+
   xlab("Sample size")+
-  geom_vline(xintercept = 187, linetype="dashed", colour="#80B1D4", linewidth=1)
+  geom_vline(xintercept = 841, linetype="dashed", colour="#80B1D4", linewidth=1)
 PinkSnapper_Sample_Size 
 
 setwd(fig_dir)
@@ -492,6 +498,7 @@ NatMort = 4.22/MaxAge
 MaxLen = 400 
 LenInc = 20
 MLL=NA # (minimum legal length) # retention set to 1 for all lengths if MLL set to NA and retention parameters not specified
+
 SelectivityType=2 # 1=selectivity inputted as vector, 2=asymptotic logistic selectivity curve
 SelectivityVec = NA # selectivity vector
 DiscMort = 0 # proportion of fish that die due to natural mortality
@@ -505,20 +512,22 @@ RefnceAges = NA
 
 #* Perth Metro ####
 CVSizeAtAge = 0.05
+FishMort = 0.12
+SelParams = c(206, 122) # L50, L95-L50 for gear selectivity
 
 # fit catch curve to simulated data
 ObsDiscCatchFreqAtLen = NA # (or set to Res$ObsDiscCatchFreqAtLen)
 PropReleased = NA # proportion of fish released, vector including mean and sd (option probably now obselete)
 length(ObsRetCatchFreqAtLen)
 length(midpt)
-InitFishMort = 0.12 # specify starting parameters
+InitFishMort = 0.1 # specify starting parameters
 InitFishMort_logit = log(InitFishMort/(1-InitFishMort)) # logit transform
-InitL50 = 206
-InitDelta = 122
+InitL50 = 190
+InitDelta = 110
 params = c(InitFishMort_logit, log(InitL50), log(InitDelta))
 DistnType = 1
 
-samplesize <-  c(100,250,500,750,1000,1500,2000,3000,5000,7500,10000)
+samplesize <-  c(100,250,500,750,1000,1500,2000,3000,4000,5000,6000)
 
 results <- as.data.frame(array(0, dim=c(length(samplesize), 3)))
 
@@ -568,13 +577,15 @@ ggsave(MaoriWrasse_Sample_Size, filename="Sample-Size_O-lineolatus_Metro.png", h
 
 #* Perth Capes ####
 CVSizeAtAge = 0.1
+SelParams = c(109, 51) 
+FishMort=0.07
 
 # fit catch curve to simulated data
 ObsDiscCatchFreqAtLen = NA # (or set to Res$ObsDiscCatchFreqAtLen)
 PropReleased = NA # proportion of fish released, vector including mean and sd (option probably now obselete)
 length(ObsRetCatchFreqAtLen)
 length(midpt)
-InitFishMort = 0.07 # specify starting parameters
+InitFishMort = 0.1 # specify starting parameters
 InitFishMort_logit = log(InitFishMort/(1-InitFishMort)) # logit transform
 InitL50 = 109
 InitDelta = 51
