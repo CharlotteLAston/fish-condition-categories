@@ -101,8 +101,7 @@ FittedRes=GetLengthBasedCatchCurveResults(params, DistnType, GrowthCurveType, Gr
 
 FittedRes$ResultsSummary
 
-setwd(fig_dir)
-jpeg(file="Catch-Curve_L-nebulosus.jpeg")
+
 plotting <- X_PlotLengthBasedCatchCurve_RetCatch(params, DistnType, MLL, SelectivityType, ObsRetCatchFreqAtLen, lbnd, ubnd, midpt,
                                    SelectivityVec, PropReleased, ObsDiscCatchFreqAtLen, DiscMort, GrowthCurveType, GrowthParams,
                                    RefnceAges, MaxAge, NatMort, TimeStep, MainLabel=NA,
@@ -119,7 +118,7 @@ good.plot <- ggplot()+
   scale_shape_manual(values = c(1,19), name=NULL, label=c("Estimate", "Observed"))+
   xlab("Length (mm)")+
   ylab("Proportion in length class")+
-  ggplot2::annotate("text", x=200, y=0.275, parse=T, label=as.character(plot.label))+
+  ggplot2::annotate("text", x=200, y=0.35, parse=T, label=as.character(plot.label))+
   theme_classic()
 good.plot
 
