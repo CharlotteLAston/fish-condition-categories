@@ -2,6 +2,7 @@
 rm(list=ls())
 # devtools::install_github("SAlexHesp/L3AssessRPackage", build_vignettes=TRUE, force=TRUE)
 library(L3Assess)
+library(tidyr)
 library(dplyr)
 library(stringr)
 library(sf)
@@ -82,7 +83,7 @@ dat <- readRDS("australian-synthesis_complete_length_coris_auricularis.RDS") %>%
 head(dat)
 range(dat$length)
 LenInterval = 30
-LenCats <- seq(from=0, to=MaxLen+20, by=LenInterval)
+LenCats <- seq(from=0, to=MaxLen, by=LenInterval)
 LenCats
 
 
@@ -117,6 +118,7 @@ plotting <- X_PlotLengthBasedCatchCurve_RetCatch(params, DistnType, MLL, Selecti
                                      xaxis_lab=NA, yaxis_lab="Proportion (observed)", xmax=400, xint=50,
                                      ymax=0.5, yint=0.1, PlotCLs=TRUE, FittedRes, nReps=200, Error.Colour = "#84D6A4")
 
+
 plot.label = deparse1(bquote(.(plotting$Fest)))
 
 good.plot <- ggplot()+
@@ -137,15 +139,16 @@ ggsave(good.plot, filename="Catch-Curve_C-auricularis_Abrolhos.png", height = a4
 setwd(data_dir)
 
 dat <- readRDS("australian-synthesis_complete_length_coris_auricularis.RDS") %>% 
-  dplyr::filter_all(.vars_predicate = any_vars(str_detect(.,"Two.Rocks|TwoRocks|Warnbro|Marmion"))) %>%
+  dplyr::filter_all(.vars_predicate = any_vars(str_detect(.,"Two.Rocks|TwoRocks|Warnbro|Marmion|Rottnest"))) %>%
   # dplyr::filter_all(.vars_predicate = any_vars(str_detect(.,"Abrolhos_stereo-BRUVs"))) %>%
-  filter(length<=MaxLen)
+  filter(length<=MaxLen) %>% 
+  dplyr::filter(!str_detect(campaign, "2022-03|2007|2008|2009"))
 
 
 head(dat)
 range(dat$length)
 LenInterval = 30
-LenCats <- seq(from=0, to=MaxLen+20, by=LenInterval)
+LenCats <- seq(from=0, to=MaxLen+30, by=LenInterval)
 LenCats
 
 
@@ -165,7 +168,7 @@ InitDelta = 30
 params = c(InitFishMort_logit, log(InitL50), log(InitDelta))
 DistnType = 1
 ObsDiscCatchFreqAtLen = NA # (or set to Res$ObsDiscCatchFreqAtLen)
-CVSizeAtAge = 0.025
+CVSizeAtAge = 0.05
 TimeStep = 0.5 #0.5 # model timestep (e.g. 1 = annual, 1/12 = monthly)
 
 FittedRes=GetLengthBasedCatchCurveResults(params, DistnType, GrowthCurveType, GrowthParams, RefnceAges, MLL, SelectivityType, ObsRetCatchFreqAtLen,

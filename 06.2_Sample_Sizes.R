@@ -272,69 +272,6 @@ WKW_Sample_Size_Abrolhos
 setwd(fig_dir)
 ggsave(WKW_Sample_Size_Abrolhos , filename="Sample-Size_C-auricularis_Abrolhos.png", height = a4.width*1, width = a4.width, units  ="mm", dpi = 300 )
 
-# #* Capes ####
-# 
-# CVSizeAtAge = 0.075
-# 
-# # fit catch curve to simulated data
-# ObsDiscCatchFreqAtLen = NA # (or set to Res$ObsDiscCatchFreqAtLen)
-# PropReleased = NA # proportion of fish released, vector including mean and sd (option probably now obsolete)
-# length(ObsRetCatchFreqAtLen)
-# length(midpt)
-# FishMort = 0.16 #1.5 * NatMort
-# InitFishMort = 0.26 # specify starting parameters
-# InitFishMort_logit = log(InitFishMort/(1-InitFishMort)) # logit transform
-# InitL50 = 217
-# InitDelta = 21
-# params = c(InitFishMort_logit, log(InitL50), log(InitDelta))
-# DistnType = 1
-# 
-# samplesize <-  c(100,250,500,750,1000,1500,2000,3000,5000)
-# 
-# results <- as.data.frame(array(0, dim=c(length(samplesize), 3)))
-# 
-# for(i in 1:length(samplesize)) {
-#   SampleSize = samplesize[i]
-#   Res_sim=SimLenAndAgeFreqData(SampleSize, MaxAge, TimeStep, NatMort, FishMort, MaxLen, LenInc, MLL, SelectivityType,
-#                                SelParams, RetenParams, SelectivityVec, DiscMort, GrowthCurveType, GrowthParams, RefnceAges, CVSizeAtAge)
-#   
-#   ObsRetCatchFreqAtLen = Res_sim$ObsRetCatchFreqAtLen
-#   midpt=Res_sim$midpt
-#   lbnd=Res_sim$lbnd
-#   ubnd=Res_sim$ubnd
-#   
-#   Results_sim=GetLengthBasedCatchCurveResults(params, DistnType, GrowthCurveType, GrowthParams, RefnceAges, MLL, SelectivityType, ObsRetCatchFreqAtLen,
-#                                               lbnd, ubnd, midpt, SelectivityVec, PropReleased, ObsDiscCatchFreqAtLen, DiscMort, CVSizeAtAge, MaxAge, NatMort, TimeStep)
-#   Est <- Results_sim$ParamEst[1,1]
-#   uprbnd <- Results_sim$ParamEst[1,3]
-#   lwrbnd <- Results_sim$ParamEst[1,2]
-#   Results <- data.frame(Est,uprbnd,lwrbnd)
-#   
-#   results[i, ] <- Results
-#   
-# }
-# 
-# results$samplesize <- samplesize
-# 
-# results.WKW <- results %>% 
-#   rename(
-#     Fmort = V1,
-#     upperbnd = V2,
-#     lowerbnd = V3)
-# 
-# WKW_Sample_Size_Capes <- results.WKW %>% 
-#   ggplot() +
-#   geom_point(aes(x=samplesize, y=Fmort))+
-#   geom_errorbar(aes(x=samplesize, y=Fmort ,ymin=lowerbnd, ymax=upperbnd))+
-#   theme_classic()+
-#   ylab("Estimate of fishing mortality")+
-#   xlab("Sample size")+
-#   geom_vline(xintercept = 2227, colour="#8DD3C7", linetype="dashed", linewidth=1)
-# WKW_Sample_Size_Capes 
-# 
-# setwd(fig_dir)
-# ggsave(WKW_Sample_Size_Capes , filename="Sample-Size_C-auricularis_Capes.png", height = a4.width*1, width = a4.width, units  ="mm", dpi = 300 )
-# 
 # #* Metro ####
 
 CVSizeAtAge = 0.05
@@ -353,7 +290,7 @@ InitDelta = 36
 params = c(InitFishMort_logit, log(InitL50), log(InitDelta))
 DistnType = 1
 
-samplesize <-  c(100,250,500,750,1000,1500,2000,3000,4000,5000,6000)
+samplesize <-  c(100,250,500,750,1000,1500,2000,3000,4000,5000,6000,7000,8000)
 
 results <- as.data.frame(array(0, dim=c(length(samplesize), 3)))
 
@@ -393,7 +330,7 @@ WKW_Sample_Size_Metro <- results.WKW %>%
   theme_classic()+
   ylab("Estimate of fishing mortality")+
   xlab("Sample size")+
-  geom_vline(xintercept = 5362, colour="#CCEBC5", linetype="dashed", linewidth=1)
+  geom_vline(xintercept = 7836, colour="#CCEBC5", linetype="dashed", linewidth=1)
 WKW_Sample_Size_Metro
 
 setwd(fig_dir)
@@ -592,7 +529,8 @@ InitDelta = 51
 params = c(InitFishMort_logit, log(InitL50), log(InitDelta))
 DistnType = 1
 
-samplesize <-  c(100,250,500,750,1000,1500,2000,3000,5000,7500,10000)
+samplesize <-  c(100,250,500,750,1000,1500,2000,3000,4000,5000,6000)
+
 
 results <- as.data.frame(array(0, dim=c(length(samplesize), 3)))
 

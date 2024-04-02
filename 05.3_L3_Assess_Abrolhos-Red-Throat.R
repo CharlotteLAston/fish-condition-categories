@@ -1,5 +1,5 @@
 rm(list=ls())
-devtools::install_github("SAlexHesp/L3AssessRPackage", build_vignettes=TRUE, force=TRUE)
+# devtools::install_github("SAlexHesp/L3AssessRPackage", build_vignettes=TRUE, force=TRUE)
 library(L3Assess)
 library(dplyr)
 library(stringr)
