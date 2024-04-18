@@ -18,7 +18,7 @@ a4.width <- 160
 MaxAge = 30
 TimeStep = 1 
 NatMort = 4.22/MaxAge
-FishMort = 0.27
+FishMort = 0.2
 MaxLen = 800
 LenInc = 20
 MLL=NA 
@@ -36,7 +36,7 @@ GrowthParams = c(Linf, vbK)
 RefnceAges = NA
 ObsDiscCatchFreqAtLen = NA 
 PropReleased = NA 
-InitFishMort = 0.27 
+InitFishMort = 0.05
 InitFishMort_logit = log(InitFishMort/(1-InitFishMort))
 DistnType = 1
 
@@ -76,7 +76,10 @@ results.spango <- results %>%
   rename(
     Fmort = V1,
     upperbnd = V2,
-    lowerbnd = V3)
+    lowerbnd = V3) %>% 
+  mutate(condition=1-Fmort,
+         lwr_condition=1-upperbnd,
+         upr_condition = 1-lowerbnd)
 
 # results1
 
@@ -84,12 +87,12 @@ results.spango <- results %>%
 
 Spango_Sample_Size <- results.spango %>% 
   ggplot() +
-  geom_point(aes(x=samplesize, y=Fmort), colour="grey20")+
-  geom_errorbar(aes(x=samplesize, y=Fmort ,ymin=lowerbnd, ymax=upperbnd), colour="grey20")+
+  geom_point(aes(x=samplesize, y=condition), colour="grey20")+
+  geom_errorbar(aes(x=samplesize, y=condition ,ymin=lwr_condition, ymax=upr_condition), colour="grey20")+
   theme_classic()+
-  ylab("Estimate of fishing mortality")+
+  ylab("Condition Estimate (1-F)")+
   xlab("Sample size")+
-  geom_vline(xintercept = 300, linetype="dashed", colour="#BEBBDA", linewidth=1.25)
+  geom_vline(xintercept = 300, linetype="dashed", colour="#88CBED", linewidth=1.25)
 Spango_Sample_Size 
 
 setwd(fig_dir)
@@ -103,7 +106,7 @@ ggsave(Spango_Sample_Size, filename="Sample-Size_L-nebulosus.png", height = a4.w
 MaxAge = 30
 TimeStep = 1 # model timestep (e.g. 1 = annual, 1/12 = monthly)
 NatMort = 4.22/MaxAge
-FishMort = 0.26
+FishMort = 0.2
 MaxLen = 700
 LenInc = 20
 MLL=NA # (minimum legal length) # retention set to 1 for all lengths if MLL set to NA and retention parameters not specified
@@ -129,7 +132,7 @@ ObsDiscCatchFreqAtLen = NA # (or set to Res$ObsDiscCatchFreqAtLen)
 PropReleased = NA # proportion of fish released, vector including mean and sd (option probably now obselete)
 length(ObsRetCatchFreqAtLen)
 length(midpt)
-InitFishMort = 0.26 # specify starting parameters
+InitFishMort = 0.05 # specify starting parameters
 InitFishMort_logit = log(InitFishMort/(1-InitFishMort)) # logit transform
 InitL50 = 400
 InitDelta = 100
@@ -167,7 +170,11 @@ results.redthroat <- results %>%
   rename(
     Fmort = V1,
     upperbnd = V2,
-    lowerbnd = V3)
+    lowerbnd = V3) %>% 
+  mutate(condition=1-Fmort,
+         lwr_condition=1-upperbnd,
+         upr_condition = 1-lowerbnd)
+
 
 # results1
 
@@ -175,12 +182,12 @@ results.redthroat <- results %>%
 
 RedThroat_Sample_Size <- results.redthroat %>% 
   ggplot() +
-  geom_point(aes(x=samplesize, y=Fmort))+
-  geom_errorbar(aes(x=samplesize, y=Fmort ,ymin=lowerbnd, ymax=upperbnd))+
+  geom_point(aes(x=samplesize, y=condition), colour="grey20")+
+  geom_errorbar(aes(x=samplesize, y=condition ,ymin=lwr_condition, ymax=upr_condition), colour="grey20")+
   theme_classic()+
-  ylab("Estimate of fishing mortality")+
+  ylab("Condition Estimate (1-F)")+
   xlab("Sample size")+
-  geom_vline(xintercept = 123, linetype="dashed", colour="#FB8072", linewidth=1)
+  geom_vline(xintercept = 123, linetype="dashed", colour="#A9439A", linewidth=1)
 RedThroat_Sample_Size 
 
 setwd(fig_dir)
@@ -213,13 +220,13 @@ RefnceAges = NA
 
 #* Abrolhos ####
 # fit catch curve to simulated data
-FishMort = 0.04 #1.5 * NatMort
+FishMort = 0.2 #1.5 * NatMort
 SelParams = c(85, 53) # L50, L95-L50 for gear selectivity
 ObsDiscCatchFreqAtLen = NA # (or set to Res$ObsDiscCatchFreqAtLen)
 PropReleased = NA # proportion of fish released, vector including mean and sd (option probably now obsolete)
 length(ObsRetCatchFreqAtLen)
 length(midpt)
-InitFishMort = 0.04 # specify starting parameters
+InitFishMort = 0.05 # specify starting parameters
 InitFishMort_logit = log(InitFishMort/(1-InitFishMort)) # logit transform
 InitL50 = 85
 InitDelta = 53
@@ -257,16 +264,24 @@ results.WKW <- results %>%
   rename(
     Fmort = V1,
     upperbnd = V2,
-    lowerbnd = V3)
+    lowerbnd = V3) %>% 
+  mutate(condition=1-Fmort,
+       lwr_condition=1-upperbnd,
+       upr_condition = 1-lowerbnd)
 
-WKW_Sample_Size_Abrolhos <- results.WKW %>% 
+
+# results1
+
+#* Plot red throat sample sizes ####
+
+WKW_Sample_Size_Abrolhos  <- results.WKW %>% 
   ggplot() +
-  geom_point(aes(x=samplesize, y=Fmort))+
-  geom_errorbar(aes(x=samplesize, y=Fmort ,ymin=lowerbnd, ymax=upperbnd))+
+  geom_point(aes(x=samplesize, y=condition), colour="grey20")+
+  geom_errorbar(aes(x=samplesize, y=condition ,ymin=lwr_condition, ymax=upr_condition), colour="grey20")+
   theme_classic()+
-  ylab("Estimate of fishing mortality")+
+  ylab("Condition Estimate (1-F)")+
   xlab("Sample size")+
-  geom_vline(xintercept = 475, colour="#84D6A4", linetype="dashed", linewidth=1)
+  geom_vline(xintercept = 479, linetype="dashed", colour="#117633", linewidth=1)
 WKW_Sample_Size_Abrolhos 
 
 setwd(fig_dir)
@@ -281,9 +296,9 @@ ObsDiscCatchFreqAtLen = NA # (or set to Res$ObsDiscCatchFreqAtLen)
 PropReleased = NA # proportion of fish released, vector including mean and sd (option probably now obsolete)
 length(ObsRetCatchFreqAtLen)
 length(midpt)
-FishMort = 0.23
+FishMort = 0.2
 SelParams = c(74, 35) # L50, L95-L50 for gear selectivity
-InitFishMort = 0.23 # specify starting parameters
+InitFishMort = 0.05 # specify starting parameters
 InitFishMort_logit = log(InitFishMort/(1-InitFishMort)) # logit transform
 InitL50 = 76
 InitDelta = 36
@@ -330,7 +345,7 @@ WKW_Sample_Size_Metro <- results.WKW %>%
   theme_classic()+
   ylab("Estimate of fishing mortality")+
   xlab("Sample size")+
-  geom_vline(xintercept = 7836, colour="#CCEBC5", linetype="dashed", linewidth=1)
+  geom_vline(xintercept = 7836, colour="#43A999", linetype="dashed", linewidth=1)
 WKW_Sample_Size_Metro
 
 setwd(fig_dir)
@@ -349,7 +364,7 @@ MLL=NA # (minimum legal length) # retention set to 1 for all lengths if MLL set 
 SelectivityType=2 # 1=selectivity inputted as vector, 2=asymptotic logistic selectivity curve
 SelectivityVec = NA # selectivity vector
 DiscMort = 0 # proportion of fish that die due to natural mortality
-FishMort = 0.23
+FishMort = 0.2
 SelParams = c(230, 52) # L50, L95-L50 for gear selectivity
 
 CVSizeAtAge = 0.075
@@ -367,7 +382,7 @@ ObsDiscCatchFreqAtLen = NA # (or set to Res$ObsDiscCatchFreqAtLen)
 PropReleased = NA # proportion of fish released, vector including mean and sd (option probably now obselete)
 length(ObsRetCatchFreqAtLen)
 length(midpt)
-InitFishMort = 0.23 # specify starting parameters
+InitFishMort = 0.05 # specify starting parameters
 InitFishMort_logit = log(InitFishMort/(1-InitFishMort)) # logit transform
 InitL50 = 216
 InitDelta = 20
@@ -406,20 +421,22 @@ results.snapper <- results %>%
   rename(
     Fmort = V1,
     upperbnd = V2,
-    lowerbnd = V3)
+    lowerbnd = V3) %>% 
+  mutate(condition=1-Fmort,
+         lwr_condition=1-upperbnd,
+         upr_condition = 1-lowerbnd)
 
-# results1
 
-#* Plot pink snapper sample sizes ####
+#* Plot red throat sample sizes ####
 
-PinkSnapper_Sample_Size <- results.snapper %>% 
+PinkSnapper_Sample_Size  <- results.snapper %>% 
   ggplot() +
-  geom_point(aes(x=samplesize, y=Fmort))+
-  geom_errorbar(aes(x=samplesize, y=Fmort ,ymin=lowerbnd, ymax=upperbnd))+
+  geom_point(aes(x=samplesize, y=condition), colour="grey20")+
+  geom_errorbar(aes(x=samplesize, y=condition ,ymin=lwr_condition, ymax=upr_condition), colour="grey20")+
   theme_classic()+
-  ylab("Estimate of fishing mortality")+
+  ylab("Condition Estimate (1-F)")+
   xlab("Sample size")+
-  geom_vline(xintercept = 841, linetype="dashed", colour="#80B1D4", linewidth=1)
+  geom_vline(xintercept = 841, linetype="dashed", colour="#332387", linewidth=1)
 PinkSnapper_Sample_Size 
 
 setwd(fig_dir)
@@ -449,7 +466,7 @@ RefnceAges = NA
 
 #* Perth Metro ####
 CVSizeAtAge = 0.05
-FishMort = 0.12
+FishMort = 0.2
 SelParams = c(206, 122) # L50, L95-L50 for gear selectivity
 
 # fit catch curve to simulated data
@@ -457,7 +474,7 @@ ObsDiscCatchFreqAtLen = NA # (or set to Res$ObsDiscCatchFreqAtLen)
 PropReleased = NA # proportion of fish released, vector including mean and sd (option probably now obselete)
 length(ObsRetCatchFreqAtLen)
 length(midpt)
-InitFishMort = 0.1 # specify starting parameters
+InitFishMort = 0.05 # specify starting parameters
 InitFishMort_logit = log(InitFishMort/(1-InitFishMort)) # logit transform
 InitL50 = 190
 InitDelta = 110
@@ -495,18 +512,22 @@ results.maoriwrasse <- results %>%
   rename(
     Fmort = V1,
     upperbnd = V2,
-    lowerbnd = V3)
+    lowerbnd = V3)%>% 
+  mutate(condition=1-Fmort,
+         lwr_condition=1-upperbnd,
+         upr_condition = 1-lowerbnd)
 
-# results1
 
-MaoriWrasse_Sample_Size <- results.maoriwrasse %>% 
+#* Plot red throat sample sizes ####
+
+MaoriWrasse_Sample_Size  <- results.maoriwrasse %>% 
   ggplot() +
-  geom_point(aes(x=samplesize, y=Fmort))+
-  geom_errorbar(aes(x=samplesize, y=Fmort ,ymin=lowerbnd, ymax=upperbnd))+
+  geom_point(aes(x=samplesize, y=condition), colour="grey20")+
+  geom_errorbar(aes(x=samplesize, y=condition ,ymin=lwr_condition, ymax=upr_condition), colour="grey20")+
   theme_classic()+
-  ylab("Estimate of fishing mortality")+
+  ylab("Condition Estimate (1-F)")+
   xlab("Sample size")+
-  geom_vline(xintercept = 459, linetype="dashed", colour="#FFED6F", linewidth=1)
+  geom_vline(xintercept = 459, linetype="dashed", colour="#872155", linewidth=1)
 MaoriWrasse_Sample_Size 
 
 setwd(fig_dir)
@@ -515,14 +536,14 @@ ggsave(MaoriWrasse_Sample_Size, filename="Sample-Size_O-lineolatus_Metro.png", h
 #* Perth Capes ####
 CVSizeAtAge = 0.1
 SelParams = c(109, 51) 
-FishMort=0.07
+FishMort=0.2
 
 # fit catch curve to simulated data
 ObsDiscCatchFreqAtLen = NA # (or set to Res$ObsDiscCatchFreqAtLen)
 PropReleased = NA # proportion of fish released, vector including mean and sd (option probably now obselete)
 length(ObsRetCatchFreqAtLen)
 length(midpt)
-InitFishMort = 0.1 # specify starting parameters
+InitFishMort = 0.05 # specify starting parameters
 InitFishMort_logit = log(InitFishMort/(1-InitFishMort)) # logit transform
 InitL50 = 109
 InitDelta = 51
@@ -561,18 +582,22 @@ results.maoriwrasse <- results %>%
   rename(
     Fmort = V1,
     upperbnd = V2,
-    lowerbnd = V3)
+    lowerbnd = V3)%>% 
+  mutate(condition=1-Fmort,
+         lwr_condition=1-upperbnd,
+         upr_condition = 1-lowerbnd)
 
-# results1
 
-MaoriWrasse_Sample_Size <- results.maoriwrasse %>% 
+#* Plot red throat sample sizes ####
+
+MaoriWrasse_Sample_Size  <- results.maoriwrasse %>% 
   ggplot() +
-  geom_point(aes(x=samplesize, y=Fmort))+
-  geom_errorbar(aes(x=samplesize, y=Fmort ,ymin=lowerbnd, ymax=upperbnd))+
+  geom_point(aes(x=samplesize, y=condition), colour="grey20")+
+  geom_errorbar(aes(x=samplesize, y=condition ,ymin=lwr_condition, ymax=upr_condition), colour="grey20")+
   theme_classic()+
-  ylab("Estimate of fishing mortality")+
+  ylab("Condition Estimate (1-F)")+
   xlab("Sample size")+
-  geom_vline(xintercept = 5464, linetype="dashed", colour="#FEB461", linewidth=1)
+  geom_vline(xintercept = 5464, linetype="dashed", colour="#CB6778", linewidth=1)
 MaoriWrasse_Sample_Size 
 
 setwd(fig_dir)
