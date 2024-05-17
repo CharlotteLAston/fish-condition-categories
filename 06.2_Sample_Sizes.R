@@ -272,7 +272,7 @@ results.WKW <- results %>%
 
 # results1
 
-#* Plot red throat sample sizes ####
+#* Plot WKW sample sizes ####
 
 WKW_Sample_Size_Abrolhos  <- results.WKW %>% 
   ggplot() +
@@ -427,7 +427,7 @@ results.snapper <- results %>%
          upr_condition = 1-lowerbnd)
 
 
-#* Plot red throat sample sizes ####
+#* Plot pink snapper sample sizes ####
 
 PinkSnapper_Sample_Size  <- results.snapper %>% 
   ggplot() +
@@ -518,7 +518,7 @@ results.maoriwrasse <- results %>%
          upr_condition = 1-lowerbnd)
 
 
-#* Plot red throat sample sizes ####
+#* Plot maori wrasse sample sizes ####
 
 MaoriWrasse_Sample_Size  <- results.maoriwrasse %>% 
   ggplot() +
