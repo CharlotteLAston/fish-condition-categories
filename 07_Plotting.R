@@ -35,11 +35,10 @@ species.labels <- c("*L. nebulosus*<br>(Ningaloo)", "*L. miniatus*<br>(Abrolhos)
 
 condition_plot <- dat %>% 
   ggplot(.)+
-  geom_rect(xmin=0, xmax=7.5,ymin=0, ymax=0.4, colour=NA, fill="#e06666ff", alpha=0.15)+
-  geom_rect(xmin=0, xmax=7.5,ymin=0.4, ymax=0.5, colour=NA, fill="#ffe599ff", alpha=0.15)+
-  geom_rect(xmin=0, xmax=7.5,ymin=0.5, ymax=0.6, colour=NA, fill="#a4c2f4ff", alpha=0.15)+
-  geom_rect(xmin=0, xmax=7.5,ymin=0.6, ymax=0.75, colour=NA, fill="#6aa84fff", alpha=0.15)+
-  geom_rect(xmin=0, xmax=7.5,ymin=0.75, ymax=1, colour=NA, fill="darkgreen", alpha=0.15)+
+  geom_rect(xmin=0, xmax=7.5,ymin=0, ymax=0.5, colour=NA, fill="#e06666ff", alpha=0.15)+
+  geom_rect(xmin=0, xmax=7.5,ymin=0.5, ymax=0.6, colour=NA, fill="#ffe599ff", alpha=0.15)+
+  geom_rect(xmin=0, xmax=7.5,ymin=0.6, ymax=0.8, colour=NA, fill="#a4c2f4ff", alpha=0.15)+
+  geom_rect(xmin=0, xmax=7.5,ymin=0.8, ymax=1, colour=NA, fill="#6aa84fff", alpha=0.15)+
   geom_point(aes(x=species.location, y=condition), fill="grey20", colour="grey20")+
   geom_linerange(aes(x=species.location, ymax=condition_upp, ymin=condition_lwr), colour="grey20")+
   theme_classic()+
