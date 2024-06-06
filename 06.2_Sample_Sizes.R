@@ -77,9 +77,10 @@ results.spango <- results %>%
     Fmort = V1,
     upperbnd = V2,
     lowerbnd = V3) %>% 
-  mutate(condition=1-Fmort,
-         lwr_condition=1-upperbnd,
-         upr_condition = 1-lowerbnd)
+  mutate(mortality=Fmort) %>% 
+  mutate(condition = 1-(mortality/(mortality+NatMort))) %>% 
+  mutate(upr_condition = 1-(lowerbnd/(lowerbnd+NatMort))) %>% 
+  mutate(lwr_condition = 1-(upperbnd/(upperbnd+NatMort))) 
 
 # results1
 
@@ -90,7 +91,7 @@ Spango_Sample_Size <- results.spango %>%
   geom_point(aes(x=samplesize, y=condition), colour="grey20")+
   geom_errorbar(aes(x=samplesize, y=condition ,ymin=lwr_condition, ymax=upr_condition), colour="grey20")+
   theme_classic()+
-  ylab("Condition Estimate (1-F)")+
+  ylab("Condition Estimate")+
   xlab("Sample size")+
   geom_vline(xintercept = 300, linetype="dashed", colour="#88CBED", linewidth=1.25)
 Spango_Sample_Size 
@@ -171,9 +172,10 @@ results.redthroat <- results %>%
     Fmort = V1,
     upperbnd = V2,
     lowerbnd = V3) %>% 
-  mutate(condition=1-Fmort,
-         lwr_condition=1-upperbnd,
-         upr_condition = 1-lowerbnd)
+  mutate(mortality=Fmort) %>% 
+  mutate(condition = 1-(mortality/(mortality+NatMort))) %>% 
+  mutate(upr_condition = 1-(lowerbnd/(lowerbnd+NatMort))) %>% 
+  mutate(lwr_condition = 1-(upperbnd/(upperbnd+NatMort))) 
 
 
 # results1
@@ -185,7 +187,7 @@ RedThroat_Sample_Size <- results.redthroat %>%
   geom_point(aes(x=samplesize, y=condition), colour="grey20")+
   geom_errorbar(aes(x=samplesize, y=condition ,ymin=lwr_condition, ymax=upr_condition), colour="grey20")+
   theme_classic()+
-  ylab("Condition Estimate (1-F)")+
+  ylab("Condition Estimate")+
   xlab("Sample size")+
   geom_vline(xintercept = 123, linetype="dashed", colour="#A9439A", linewidth=1)
 RedThroat_Sample_Size 
@@ -265,10 +267,10 @@ results.WKW <- results %>%
     Fmort = V1,
     upperbnd = V2,
     lowerbnd = V3) %>% 
-  mutate(condition=1-Fmort,
-       lwr_condition=1-upperbnd,
-       upr_condition = 1-lowerbnd)
-
+  mutate(mortality=Fmort) %>% 
+  mutate(condition = 1-(mortality/(mortality+NatMort))) %>% 
+  mutate(upr_condition = 1-(lowerbnd/(lowerbnd+NatMort))) %>% 
+  mutate(lwr_condition = 1-(upperbnd/(upperbnd+NatMort))) 
 
 # results1
 
@@ -279,7 +281,7 @@ WKW_Sample_Size_Abrolhos  <- results.WKW %>%
   geom_point(aes(x=samplesize, y=condition), colour="grey20")+
   geom_errorbar(aes(x=samplesize, y=condition ,ymin=lwr_condition, ymax=upr_condition), colour="grey20")+
   theme_classic()+
-  ylab("Condition Estimate (1-F)")+
+  ylab("Condition Estimate")+
   xlab("Sample size")+
   geom_vline(xintercept = 479, linetype="dashed", colour="#117633", linewidth=1)
 WKW_Sample_Size_Abrolhos 
@@ -336,14 +338,18 @@ results.WKW <- results %>%
   rename(
     Fmort = V1,
     upperbnd = V2,
-    lowerbnd = V3)
+    lowerbnd = V3) %>% 
+  mutate(mortality=Fmort) %>% 
+  mutate(condition = 1-(mortality/(mortality+NatMort))) %>% 
+  mutate(upr_condition = 1-(lowerbnd/(lowerbnd+NatMort))) %>% 
+  mutate(lwr_condition = 1-(upperbnd/(upperbnd+NatMort))) 
 
 WKW_Sample_Size_Metro <- results.WKW %>% 
   ggplot() +
   geom_point(aes(x=samplesize, y=Fmort))+
   geom_errorbar(aes(x=samplesize, y=Fmort ,ymin=lowerbnd, ymax=upperbnd))+
   theme_classic()+
-  ylab("Estimate of fishing mortality")+
+  ylab("Condition Estimate")+
   xlab("Sample size")+
   geom_vline(xintercept = 7836, colour="#43A999", linetype="dashed", linewidth=1)
 WKW_Sample_Size_Metro
@@ -422,10 +428,10 @@ results.snapper <- results %>%
     Fmort = V1,
     upperbnd = V2,
     lowerbnd = V3) %>% 
-  mutate(condition=1-Fmort,
-         lwr_condition=1-upperbnd,
-         upr_condition = 1-lowerbnd)
-
+  mutate(mortality=Fmort) %>% 
+  mutate(condition = 1-(mortality/(mortality+NatMort))) %>% 
+  mutate(upr_condition = 1-(lowerbnd/(lowerbnd+NatMort))) %>% 
+  mutate(lwr_condition = 1-(upperbnd/(upperbnd+NatMort))) 
 
 #* Plot pink snapper sample sizes ####
 
@@ -434,7 +440,7 @@ PinkSnapper_Sample_Size  <- results.snapper %>%
   geom_point(aes(x=samplesize, y=condition), colour="grey20")+
   geom_errorbar(aes(x=samplesize, y=condition ,ymin=lwr_condition, ymax=upr_condition), colour="grey20")+
   theme_classic()+
-  ylab("Condition Estimate (1-F)")+
+  ylab("Condition Estimate")+
   xlab("Sample size")+
   geom_vline(xintercept = 841, linetype="dashed", colour="#332387", linewidth=1)
 PinkSnapper_Sample_Size 
@@ -513,9 +519,10 @@ results.maoriwrasse <- results %>%
     Fmort = V1,
     upperbnd = V2,
     lowerbnd = V3)%>% 
-  mutate(condition=1-Fmort,
-         lwr_condition=1-upperbnd,
-         upr_condition = 1-lowerbnd)
+  mutate(mortality=Fmort) %>% 
+  mutate(condition = 1-(mortality/(mortality+NatMort))) %>% 
+  mutate(upr_condition = 1-(lowerbnd/(lowerbnd+NatMort))) %>% 
+  mutate(lwr_condition = 1-(upperbnd/(upperbnd+NatMort))) 
 
 
 #* Plot maori wrasse sample sizes ####
@@ -525,7 +532,7 @@ MaoriWrasse_Sample_Size  <- results.maoriwrasse %>%
   geom_point(aes(x=samplesize, y=condition), colour="grey20")+
   geom_errorbar(aes(x=samplesize, y=condition ,ymin=lwr_condition, ymax=upr_condition), colour="grey20")+
   theme_classic()+
-  ylab("Condition Estimate (1-F)")+
+  ylab("Condition Estimate")+
   xlab("Sample size")+
   geom_vline(xintercept = 459, linetype="dashed", colour="#872155", linewidth=1)
 MaoriWrasse_Sample_Size 
@@ -583,9 +590,9 @@ results.maoriwrasse <- results %>%
     Fmort = V1,
     upperbnd = V2,
     lowerbnd = V3)%>% 
-  mutate(condition=1-Fmort,
-         lwr_condition=1-upperbnd,
-         upr_condition = 1-lowerbnd)
+  mutate(condition = 1-(mortality/(mortality+nat.mort))) %>% 
+  mutate(upr_condition = 1-(lowerbnd/(lowerbnd+nat.mort))) %>% 
+  mutate(lwr_condition = 1-(upperbnd/(upperbnd+nat.mort))) 
 
 
 #* Plot red throat sample sizes ####
@@ -595,7 +602,7 @@ MaoriWrasse_Sample_Size  <- results.maoriwrasse %>%
   geom_point(aes(x=samplesize, y=condition), colour="grey20")+
   geom_errorbar(aes(x=samplesize, y=condition ,ymin=lwr_condition, ymax=upr_condition), colour="grey20")+
   theme_classic()+
-  ylab("Condition Estimate (1-F)")+
+  ylab("Condition Estimate")+
   xlab("Sample size")+
   geom_vline(xintercept = 5464, linetype="dashed", colour="#CB6778", linewidth=1)
 MaoriWrasse_Sample_Size 
