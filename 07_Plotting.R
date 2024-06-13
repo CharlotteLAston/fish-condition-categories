@@ -19,7 +19,7 @@ library(tidyterra)
 working.dir <- dirname(rstudioapi::getActiveDocumentContext()$path)
 data_dir <- paste(working.dir, "Data", sep="/")
 fig_dir <- paste(working.dir, "Figures", sep="/")
-sp_dir <- paste(working.dir, "Spatial", sep="/")
+sp_dir <- paste(working.dir, "Spatial_data", sep="/")
 
 a4.width=160
 
