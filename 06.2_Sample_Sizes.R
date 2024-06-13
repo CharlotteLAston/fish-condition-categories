@@ -88,6 +88,7 @@ results.spango <- results %>%
 
 Spango_Sample_Size <- results.spango %>% 
   ggplot() +
+  geom_rect(xmin=-275, xmax=6350, ymin=0.37, ymax=0.47, linetype="dotted", fill=NA, colour="grey50")+
   geom_point(aes(x=samplesize, y=condition), colour="grey20")+
   geom_errorbar(aes(x=samplesize, y=condition ,ymin=lwr_condition, ymax=upr_condition), colour="grey20")+
   theme_classic()+
@@ -184,6 +185,7 @@ results.redthroat <- results %>%
 
 RedThroat_Sample_Size <- results.redthroat %>% 
   ggplot() +
+  geom_rect(xmin=-275, xmax=6350, ymin=0.36, ymax=0.46, linetype="dotted", fill=NA, colour="grey50")+
   geom_point(aes(x=samplesize, y=condition), colour="grey20")+
   geom_errorbar(aes(x=samplesize, y=condition ,ymin=lwr_condition, ymax=upr_condition), colour="grey20")+
   theme_classic()+
@@ -278,6 +280,7 @@ results.WKW <- results %>%
 
 WKW_Sample_Size_Abrolhos  <- results.WKW %>% 
   ggplot() +
+  geom_rect(xmin=-400, xmax=8350, ymin=0.66, ymax=0.76, linetype="dotted", fill=NA, colour="grey50")+
   geom_point(aes(x=samplesize, y=condition), colour="grey20")+
   geom_errorbar(aes(x=samplesize, y=condition ,ymin=lwr_condition, ymax=upr_condition), colour="grey20")+
   theme_classic()+
@@ -346,6 +349,7 @@ results.WKW <- results %>%
 
 WKW_Sample_Size_Metro <- results.WKW %>% 
   ggplot() +
+  geom_rect(xmin=-400, xmax=8350, ymin=0.165, ymax=0.265, linetype="dotted", fill=NA, colour="grey50")+
   geom_point(aes(x=samplesize, y=Fmort))+
   geom_errorbar(aes(x=samplesize, y=Fmort ,ymin=lowerbnd, ymax=upperbnd))+
   theme_classic()+
@@ -437,6 +441,7 @@ results.snapper <- results %>%
 
 PinkSnapper_Sample_Size  <- results.snapper %>% 
   ggplot() +
+  geom_rect(xmin=-275, xmax=6350, ymin=0.285, ymax=0.385, linetype="dotted", fill=NA, colour="grey50")+
   geom_point(aes(x=samplesize, y=condition), colour="grey20")+
   geom_errorbar(aes(x=samplesize, y=condition ,ymin=lwr_condition, ymax=upr_condition), colour="grey20")+
   theme_classic()+
@@ -529,6 +534,7 @@ results.maoriwrasse <- results %>%
 
 MaoriWrasse_Sample_Size  <- results.maoriwrasse %>% 
   ggplot() +
+  geom_rect(xmin=-275, xmax=6350, ymin=0.6, ymax=0.7, linetype="dotted", fill=NA, colour="grey50")+
   geom_point(aes(x=samplesize, y=condition), colour="grey20")+
   geom_errorbar(aes(x=samplesize, y=condition ,ymin=lwr_condition, ymax=upr_condition), colour="grey20")+
   theme_classic()+
@@ -590,15 +596,17 @@ results.maoriwrasse <- results %>%
     Fmort = V1,
     upperbnd = V2,
     lowerbnd = V3)%>% 
-  mutate(condition = 1-(mortality/(mortality+nat.mort))) %>% 
-  mutate(upr_condition = 1-(lowerbnd/(lowerbnd+nat.mort))) %>% 
-  mutate(lwr_condition = 1-(upperbnd/(upperbnd+nat.mort))) 
+  mutate(mortality=Fmort) %>% 
+  mutate(condition = 1-(mortality/(mortality+NatMort))) %>% 
+  mutate(upr_condition = 1-(lowerbnd/(lowerbnd+NatMort))) %>% 
+  mutate(lwr_condition = 1-(upperbnd/(upperbnd+NatMort))) 
 
 
-#* Plot red throat sample sizes ####
+#* Plot maori wrasse sample sizes ####
 
 MaoriWrasse_Sample_Size  <- results.maoriwrasse %>% 
   ggplot() +
+  geom_rect(xmin=-275, xmax=6350, ymin=0.6, ymax=0.7, linetype="dotted", fill=NA, colour="grey50")+
   geom_point(aes(x=samplesize, y=condition), colour="grey20")+
   geom_errorbar(aes(x=samplesize, y=condition ,ymin=lwr_condition, ymax=upr_condition), colour="grey20")+
   theme_classic()+
