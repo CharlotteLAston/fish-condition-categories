@@ -40,6 +40,7 @@ PropReleased = NA # proportion of fish released, vector including mean and sd (o
 midpt=Res$midpt
 lbnd=Res$lbnd
 ubnd=Res$ubnd
+ObsRetCatchFreqAtLen = Res$ObsRetCatchFreqAtLen
 length(ObsRetCatchFreqAtLen)
 length(midpt)
 InitFishMort = 0.1 # specify starting parameters
@@ -48,8 +49,6 @@ InitL50 = 140
 InitDelta = 70
 params = c(InitFishMort_logit, log(InitL50), log(InitDelta))
 DistnType = 1
-
-ObsRetCatchFreqAtLen = Res$ObsRetCatchFreqAtLen
 
 FittedRes=GetLengthBasedCatchCurveResults(params, DistnType, GrowthCurveType, GrowthParams, RefnceAges, MLL, SelectivityType, ObsRetCatchFreqAtLen,
                                           lbnd, ubnd, midpt, SelectivityVec, PropReleased, ObsDiscCatchFreqAtLen, DiscMort, CVSizeAtAge, MaxAge, NatMort, TimeStep)
@@ -78,7 +77,7 @@ dat <- readRDS("australian-synthesis_complete_length_opthalmolepis_lineolatus.RD
 head(dat)
 range(dat$length)
 LenInterval = 20
-LenCats <- seq(from=0, to=MaxLen, by=LenInterval)
+LenCats <- seq(from=0, to=MaxLen+20, by=LenInterval)
 LenCats
 
 
@@ -98,7 +97,7 @@ InitDelta = 60
 params = c(InitFishMort_logit, log(InitL50), log(InitDelta))
 DistnType = 1
 ObsDiscCatchFreqAtLen = NA # (or set to Res$ObsDiscCatchFreqAtLen)
-CVSizeAtAge = 0.05#0.025
+CVSizeAtAge = 0.05 #0.025
 TimeStep = 0.5
 
 FittedRes=GetLengthBasedCatchCurveResults(params, DistnType, GrowthCurveType, GrowthParams, RefnceAges, MLL, SelectivityType, ObsRetCatchFreqAtLen,
@@ -135,13 +134,23 @@ setwd(data_dir)
 
 dat <- readRDS("australian-synthesis_complete_length_opthalmolepis_lineolatus.RDS") %>% 
   dplyr::filter_all(.vars_predicate = any_vars(str_detect(.,"Capes|south-west|Ngari"))) %>%
-  filter(str_detect(campaign, "2006|2007|2008|2009|2010|2011|2012|2013|2014|2014|2016|2017|2018")) %>%
+  filter(str_detect(campaign, "2014|2015|2016|2016|2017|2018|2019")) %>% 
+  filter(length<MaxLen) %>% 
+  dplyr::select(campaign, length, sample) %>% 
+  rename(campaignid = "campaign")
+
+DBCA_data <- readRDS("DBCA_lengths.RDS") %>% 
+  filter(scientific %in% "Ophthalmolepis lineolatus") %>% 
+  filter(campaignid %in% "2019-02_NgariCapes_stereoBRUVs")%>% 
+  dplyr::select(campaignid, length, sample) %>% 
   filter(length<MaxLen)
+
+dat <- rbind(dat, DBCA_data)
 
 head(dat)
 range(dat$length)
-LenInterval = 20
-LenCats <- seq(from=0, to=MaxLen, by=LenInterval)
+LenInterval = 15
+LenCats <- seq(from=0, to=MaxLen+15, by=LenInterval)
 LenCats
 
 
@@ -161,8 +170,8 @@ InitDelta = 60
 params = c(InitFishMort_logit, log(InitL50), log(InitDelta))
 DistnType = 1
 ObsDiscCatchFreqAtLen = NA # (or set to Res$ObsDiscCatchFreqAtLen)
-CVSizeAtAge = 0.1 #0.025
-TimeStep = 0.5
+CVSizeAtAge = 0.05 #0.025
+TimeStep = 1/12
 
 FittedRes=GetLengthBasedCatchCurveResults(params, DistnType, GrowthCurveType, GrowthParams, RefnceAges, MLL, SelectivityType, ObsRetCatchFreqAtLen,
                                           lbnd, ubnd, midpt, SelectivityVec, PropReleased, ObsDiscCatchFreqAtLen, DiscMort, CVSizeAtAge, MaxAge, NatMort, TimeStep)
@@ -173,7 +182,7 @@ FittedRes$ResultsSummary
 plotting <- X_PlotLengthBasedCatchCurve_RetCatch(params, DistnType, MLL, SelectivityType, ObsRetCatchFreqAtLen, lbnd, ubnd, midpt,
                                      SelectivityVec, PropReleased, ObsDiscCatchFreqAtLen, DiscMort, GrowthCurveType, GrowthParams,
                                      RefnceAges, MaxAge, NatMort, TimeStep, MainLabel=NA,
-                                     xaxis_lab=NA, yaxis_lab="Proportion (observed)", xmax=400, xint=50,
+                                     xaxis_lab=NA, yaxis_lab="Proportion (observed)", xmax=500, xint=50,
                                      ymax=0.5, yint=0.1, PlotCLs=TRUE, FittedRes, nReps=200, Error.Colour = "#FEB461")
 
 plot.label = deparse1(bquote(.(plotting$Fest)))

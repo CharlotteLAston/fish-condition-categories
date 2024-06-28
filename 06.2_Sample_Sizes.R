@@ -94,7 +94,7 @@ Spango_Sample_Size <- results.spango %>%
   theme_classic()+
   ylab("Condition Estimate")+
   xlab("Sample size")+
-  geom_vline(xintercept = 300, linetype="dashed", colour="#88CBED", linewidth=1.25)
+  geom_vline(xintercept = 404, linetype="dashed", colour="#88CBED", linewidth=1.25)
 Spango_Sample_Size 
 
 setwd(fig_dir)
@@ -102,29 +102,28 @@ ggsave(Spango_Sample_Size, filename="Sample-Size_L-nebulosus.png", height = a4.w
 
 
 
-#### SAMPLE SIZE FOR RED THROAT ####
+#### SAMPLE SIZE FOR Breaksea Cod ####
 
 # Simulate data
-MaxAge = 30
-TimeStep = 1 # model timestep (e.g. 1 = annual, 1/12 = monthly)
-NatMort = 4.22/MaxAge
+MaxAge = 20
+TimeStep = 0.5 # model timestep (e.g. 1 = annual, 1/12 = monthly)
+NatMort = 0.3
 FishMort = 0.2
-MaxLen = 700
+MaxLen = 500
 LenInc = 20
 MLL=NA # (minimum legal length) # retention set to 1 for all lengths if MLL set to NA and retention parameters not specified
 SelectivityType=2 # 1=selectivity inputted as vector, 2=asymptotic logistic selectivity curve
 SelectivityVec = NA # selectivity vector
-SelParams = c(343, 116) # L50, L95-L50 for gear selectivity
+SelParams = c(251, 93) # L50, L95-L50 for gear selectivity
 RetenParams = c(NA, NA) # L50, L95-L50 for retention
 DiscMort = 0 # proportion of fish that die due to natural mortality
 
 # single sex, von Bertalanffy
 GrowthCurveType = 1 # 1 = von Bertalanffy, 2 = Schnute
-# Linf = 664
-Linf = 573.1
+Linf = 561
 # vbK = 0.241
-vbK = 0.282
-CVSizeAtAge = 0.05
+vbK = 0.14
+CVSizeAtAge = 0.025
 GrowthParams = c(Linf, vbK)
 RefnceAges = NA
 
@@ -136,8 +135,8 @@ length(ObsRetCatchFreqAtLen)
 length(midpt)
 InitFishMort = 0.05 # specify starting parameters
 InitFishMort_logit = log(InitFishMort/(1-InitFishMort)) # logit transform
-InitL50 = 400
-InitDelta = 100
+InitL50 = 251
+InitDelta = 93
 params = c(InitFishMort_logit, log(InitL50), log(InitDelta))
 DistnType = 1
 
@@ -168,7 +167,7 @@ for(i in 1:length(samplesize)) {
 
 results$samplesize <- samplesize
 
-results.redthroat <- results %>% 
+results.breaksea <- results %>% 
   rename(
     Fmort = V1,
     upperbnd = V2,
@@ -181,27 +180,27 @@ results.redthroat <- results %>%
 
 # results1
 
-#* Plot red throat sample sizes ####
+#* Plot breaksea sample sizes ####
 
-RedThroat_Sample_Size <- results.redthroat %>% 
+Breaksea_Sample_Size <- results.breaksea %>% 
   ggplot() +
-  geom_rect(xmin=-275, xmax=6350, ymin=0.36, ymax=0.46, linetype="dotted", fill=NA, colour="grey50")+
+  geom_rect(xmin=-275, xmax=6350, ymin=0.54, ymax=0.64, linetype="dotted", fill=NA, colour="grey50")+
   geom_point(aes(x=samplesize, y=condition), colour="grey20")+
   geom_errorbar(aes(x=samplesize, y=condition ,ymin=lwr_condition, ymax=upr_condition), colour="grey20")+
   theme_classic()+
   ylab("Condition Estimate")+
   xlab("Sample size")+
-  geom_vline(xintercept = 123, linetype="dashed", colour="#A9439A", linewidth=1)
-RedThroat_Sample_Size 
+  geom_vline(xintercept = 252, linetype="dashed", colour="#A9439A", linewidth=1)
+Breaksea_Sample_Size 
 
 setwd(fig_dir)
-ggsave(RedThroat_Sample_Size, filename="Sample-Size_L-miniatus.png", height = a4.width*1, width = a4.width, units  ="mm", dpi = 300 )
+ggsave(Breaksea_Sample_Size, filename="Sample-Size_E-armatus.png", height = a4.width*1, width = a4.width, units  ="mm", dpi = 300 )
 
 
 #### SAMPLE SIZE FOR Western King Wrasse ####
 
 # Simulate data
-MaxAge = 8.5 #https://onlinelibrary.wiley.com/doi/10.1111/j.1095-8649.2012.03446.x
+MaxAge = 10.2 #https://onlinelibrary.wiley.com/doi/10.1111/j.1095-8649.2012.03446.x
 TimeStep = 0.5 # model timestep (e.g. 1 = annual, 1/12 = monthly)
 NatMort = 4.22/MaxAge
 MaxLen = 400
@@ -280,7 +279,7 @@ results.WKW <- results %>%
 
 WKW_Sample_Size_Abrolhos  <- results.WKW %>% 
   ggplot() +
-  geom_rect(xmin=-400, xmax=8350, ymin=0.66, ymax=0.76, linetype="dotted", fill=NA, colour="grey50")+
+  geom_rect(xmin=-400, xmax=6350, ymin=0.62, ymax=0.72, linetype="dotted", fill=NA, colour="grey50")+
   geom_point(aes(x=samplesize, y=condition), colour="grey20")+
   geom_errorbar(aes(x=samplesize, y=condition ,ymin=lwr_condition, ymax=upr_condition), colour="grey20")+
   theme_classic()+
@@ -355,7 +354,7 @@ WKW_Sample_Size_Metro <- results.WKW %>%
   theme_classic()+
   ylab("Condition Estimate")+
   xlab("Sample size")+
-  geom_vline(xintercept = 7836, colour="#43A999", linetype="dashed", linewidth=1)
+  geom_vline(xintercept = 7852, colour="#43A999", linetype="dashed", linewidth=1)
 WKW_Sample_Size_Metro
 
 setwd(fig_dir)
@@ -447,7 +446,7 @@ PinkSnapper_Sample_Size  <- results.snapper %>%
   theme_classic()+
   ylab("Condition Estimate")+
   xlab("Sample size")+
-  geom_vline(xintercept = 841, linetype="dashed", colour="#332387", linewidth=1)
+  geom_vline(xintercept = 872, linetype="dashed", colour="#332387", linewidth=1)
 PinkSnapper_Sample_Size 
 
 setwd(fig_dir)
@@ -547,7 +546,8 @@ setwd(fig_dir)
 ggsave(MaoriWrasse_Sample_Size, filename="Sample-Size_O-lineolatus_Metro.png", height = a4.width*1, width = a4.width, units  ="mm", dpi = 300 )
 
 #* Perth Capes ####
-CVSizeAtAge = 0.1
+CVSizeAtAge = 0.05
+TimeStep = 1/12
 SelParams = c(109, 51) 
 FishMort=0.2
 
@@ -606,7 +606,7 @@ results.maoriwrasse <- results %>%
 
 MaoriWrasse_Sample_Size  <- results.maoriwrasse %>% 
   ggplot() +
-  geom_rect(xmin=-275, xmax=6350, ymin=0.6, ymax=0.7, linetype="dotted", fill=NA, colour="grey50")+
+  geom_rect(xmin=-275, xmax=6350, ymin=0.63, ymax=0.73, linetype="dotted", fill=NA, colour="grey50")+
   geom_point(aes(x=samplesize, y=condition), colour="grey20")+
   geom_errorbar(aes(x=samplesize, y=condition ,ymin=lwr_condition, ymax=upr_condition), colour="grey20")+
   theme_classic()+

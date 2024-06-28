@@ -36,30 +36,31 @@ M95 = 5.97 # From Marriott et al. 2011
 
 #* Read in Data ####
 setwd(data_dir)
-Shallow2015 <- read.csv("2015-08_Ningaloo_stereoBRUVs_length.csv") %>% 
-  filter(!campaignid %in% "2015-08_Ningaloo.deep.sanctuaries_stereoBRUVs") %>% 
-  mutate(scientific = paste0(genus, sep=" ", species)) %>% 
-  dplyr::select(sample, length, status, campaignid)
+# Shallow2015 <- read.csv("2015-08_Ningaloo_stereoBRUVs_length.csv") %>% 
+#   mutate(scientific = paste0(genus, sep=" ", species)) %>% 
+#   dplyr::select(sample, length, status, campaignid)
 Deep2019 <- read.csv("ningaloo.complete.length.csv") %>% 
   mutate(scientific = paste0(genus, sep=" ", species)) %>% 
   filter(scientific %in% "Lethrinus nebulosus") %>% 
-  filter(!is.na(length)) 
-Deep2019Zones <- read.csv("final.data.csv") %>% 
-  dplyr::select(sample, status)
+  filter(!is.na(length)) %>% 
+  dplyr::select(campaignid, sample, scientific, length)
 
-Deep2019 <- Deep2019 %>% 
-  left_join(., Deep2019Zones, by="sample") %>% 
-  dplyr::select(sample, length, status.y, campaignid) %>% 
-  rename(status="status.y") %>% 
-  mutate(status = ifelse(status %in% "NT", "No-take", "Fished"))
 
 Deep2021 <- readRDS("Ningaloo_PtCloates_BOSS-BRUV_dat_length.rds") %>% 
   filter(scientific %in% "Lethrinidae Lethrinus nebulosus") %>% 
   filter(!is.na(length)) %>% 
-  dplyr::select(sample, length, status, campaignid) %>% 
-  mutate(status = ifelse(status %in% "No-Take", "No-take", status))
+  dplyr::select(sample, length, campaignid, scientific) 
 
-Full.Lengths <- rbind(Shallow2015, Deep2019, Deep2021)
+DBCA_data <- readRDS("DBCA_lengths.RDS") %>% 
+  filter(scientific %in% "Lethrinus nebulosus") %>% 
+  filter(!campaignid %in% "2021-05_Jurien.Bay.MP.Monitoring_stereoBRUVs") %>% 
+  dplyr::select(sample, length, campaignid, scientific) 
+
+Shallow_Data <- read.csv("2015-08_Ningaloo_stereoBRUVs_length.csv")%>% 
+  mutate(scientific = paste0(genus, sep=" ", species)) %>% 
+  dplyr::select(sample, length, campaignid, scientific) 
+
+Full.Lengths <- rbind(DBCA_data, Deep2019, Deep2021)
 
 setwd(data_dir)
 write.csv(Full.Lengths, "Nebulosus_lengths.csv")

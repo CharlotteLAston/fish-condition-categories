@@ -10,12 +10,12 @@ library(ggplot2)
 
 # Simulate data
 SampleSize=5000 # sample size for retained catches (and same number for released fish, if an MLL is specified)
-set.seed(123)
-MaxAge = 8.5
+
+MaxAge = 10.2
 TimeStep = 0.5 # model timestep (e.g. 1 = annual, 1/12 = monthly)
 NatMort = 4.22/MaxAge
 FishMort = 1.5 * NatMort
-MaxLen = 400
+MaxLen = 397
 LenInc = 20
 MLL=NA # (minimum legal length) # retention set to 1 for all lengths if MLL set to NA and retention parameters not specified
 SelectivityType=2 # 1=selectivity inputted as vector, 2=asymptotic logistic selectivity curve
@@ -78,12 +78,12 @@ dat <- readRDS("australian-synthesis_complete_length_coris_auricularis.RDS") %>%
   dplyr::filter_all(.vars_predicate = any_vars(str_detect(.,"Abrolhos.MF|Abrolhos.WAMSI"))) %>%
   # dplyr::filter_all(.vars_predicate = any_vars(str_detect(.,"Abrolhos_stereo-BRUVs"))) %>%
   filter(length<=MaxLen)
-  
+
   
 head(dat)
 range(dat$length)
 LenInterval = 30
-LenCats <- seq(from=0, to=MaxLen, by=LenInterval)
+LenCats <- seq(from=0, to=MaxLen+30, by=LenInterval)
 LenCats
 
 
@@ -103,7 +103,7 @@ InitDelta = 30
 params = c(InitFishMort_logit, log(InitL50), log(InitDelta))
 DistnType = 1
 ObsDiscCatchFreqAtLen = NA # (or set to Res$ObsDiscCatchFreqAtLen)
-CVSizeAtAge = 0.025
+CVSizeAtAge = 0.03
 TimeStep = 0.5 #0.5 # model timestep (e.g. 1 = annual, 1/12 = monthly)
 
 FittedRes=GetLengthBasedCatchCurveResults(params, DistnType, GrowthCurveType, GrowthParams, RefnceAges, MLL, SelectivityType, ObsRetCatchFreqAtLen,
@@ -115,7 +115,7 @@ FittedRes$ResultsSummary
 plotting <- X_PlotLengthBasedCatchCurve_RetCatch(params, DistnType, MLL, SelectivityType, ObsRetCatchFreqAtLen, lbnd, ubnd, midpt,
                                      SelectivityVec, PropReleased, ObsDiscCatchFreqAtLen, DiscMort, GrowthCurveType, GrowthParams,
                                      RefnceAges, MaxAge, NatMort, TimeStep, MainLabel=NA,
-                                     xaxis_lab=NA, yaxis_lab="Proportion (observed)", xmax=400, xint=50,
+                                     xaxis_lab=NA, yaxis_lab="Proportion (observed)", xmax=800, xint=50,
                                      ymax=0.5, yint=0.1, PlotCLs=TRUE, FittedRes, nReps=200, Error.Colour = "#84D6A4")
 
 
@@ -143,7 +143,6 @@ dat <- readRDS("australian-synthesis_complete_length_coris_auricularis.RDS") %>%
   # dplyr::filter_all(.vars_predicate = any_vars(str_detect(.,"Abrolhos_stereo-BRUVs"))) %>%
   filter(length<=MaxLen) %>% 
   dplyr::filter(!str_detect(campaign, "2022-03|2007|2008|2009"))
-
 
 head(dat)
 range(dat$length)

@@ -1,10 +1,11 @@
-rm(list=ls())
 # devtools::install_github("SAlexHesp/L3AssessRPackage", build_vignettes=TRUE, force=TRUE)
 library(L3Assess)
 library(dplyr)
 library(stringr)
 library(sf)
 library(ggplot2)
+
+rm(list=ls())
 
 working.dir <- dirname(rstudioapi::getActiveDocumentContext()$path)
 data_dir <- paste(working.dir, "Data", sep="/")
@@ -88,13 +89,24 @@ vbK = 0.12 #https://academic.oup.com/icesjms/article/74/1/180/2669555
 GrowthParams = c(Linf, vbK)
 RefnceAges = NA
 
+setwd(data_dir)
+
 dat <- readRDS("australian-synthesis_complete_length_chrysophrys_auratus.RDS") %>% 
   filter(length<MaxLen) %>% 
   dplyr::filter_all(.vars_predicate = any_vars(str_detect(.,"2008|2009|2010|2011"))) %>% 
   # dplyr::filter_all(.vars_predicate = any_vars(str_detect(.,"Capes|Geographe|SwC|south-west|Ngari")))
   # dplyr::filter_all(.vars_predicate = any_vars(str_detect(.,"Abrolhos"))) 
   dplyr::filter_all(.vars_predicate = any_vars(str_detect(.,"Marmion|TwoRocks|Two.Rocks|Capes|Geographe|SwC|south-west|Ngari|Warnbro|Rottnest"))) %>% 
-  dplyr::filter(!str_detect(campaign, "Perth.Canyon|Geographe"))
+  dplyr::filter(!str_detect(campaign, "Perth.Canyon|Geographe")) %>% 
+  dplyr::select(sample, campaign, length) %>% 
+  rename(campaignid = "campaign")
+
+DBCA_data <- readRDS("DBCA_lengths.RDS") %>% 
+  filter(scientific %in% "Chrysophrys auratus") %>% 
+  filter(campaignid %in% "2019-02_NgariCapes_stereoBRUVs") %>% 
+  dplyr::select(sample, campaignid, length)
+
+dat <- rbind(dat, DBCA_data)
 
 head(dat)
 range(dat$length)

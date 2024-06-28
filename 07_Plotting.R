@@ -25,22 +25,22 @@ a4.width=160
 
 #### Make data frame ####
 
-dat <- data.frame(species=as.factor(c("L. nebulosus", "L. miniatus", "C. auratus", "C. auricularis", "C. auricularis", "O. lineolatus", "O. lineolatus")),
-                  location = c("Ningaloo", "Abrolhos", "Perth Metro and South West", "Abrolhos", "Perth Metro", "Perth Metro", "South West"),
-                  mortality = c(0.27, 0.26, 0.23, 0.04, 0.23, 0.12, 0.07),
-                  nat.mort = c(0.146, 0.14, 0.102, 0.5, 0.5, 0.36, 0.36),
-                  upp_bnd = c(0.35, 0.48, 0.26, 0.25, 0.25, 0.24, 0.10),
-                  lwr_bnd = c(0.2, 0.12, 0.2, 0.01, 0.2, 0.06, 0.05)) %>% 
+dat <- data.frame(species=as.factor(c("L. nebulosus", "E. armatus ", "C. auratus", "C. auricularis", "C. auricularis", "O. lineolatus", "O. lineolatus")),
+                  location = c("Ningaloo", "Perth Metro and South West", "Perth Metro and South West", "Abrolhos", "Perth Metro", "Perth Metro", "South West"),
+                  mortality = c(0.27, 0.1, 0.23, 0.13, 0.32, 0.12, 0.088),
+                  nat.mort = c(0.146, 0.3, 0.102, 0.41, 0.41, 0.36, 0.36),
+                  upp_bnd = c(0.35, 0.034, 0.26, 0.23, 0.294, 0.24, 0.115),
+                  lwr_bnd = c(0.2, 0.24, 0.2, 0.071, 0.337, 0.06, 0.067)) %>% 
   mutate(species.location = paste0(species, sep="_", location)) %>% 
   mutate(condition = 1-(mortality/(mortality+nat.mort))) %>% 
   mutate(condition_upp = 1-(lwr_bnd/(lwr_bnd+nat.mort))) %>% 
   mutate(condition_lwr = 1-(upp_bnd/(upp_bnd+nat.mort))) %>% 
-  mutate(species.location=fct_relevel(species.location, "L. nebulosus_Ningaloo","L. miniatus_Abrolhos","C. auratus_Perth Metro and South West",
+  mutate(species.location=fct_relevel(species.location, "L. nebulosus_Ningaloo","E. armatus _Perth Metro and South West","C. auratus_Perth Metro and South West",
                                       "C. auricularis_Perth Metro", "O. lineolatus_Perth Metro", "C. auricularis_Abrolhos","O. lineolatus_South West"))
 
 colours <- c("#88CBED", "#A9439A", "#332387", "#117633", "#43A999", "#872155", "#CB6778")
-species.labels <- c("*L. nebulosus*<br>(Ningaloo)", "*L. miniatus*<br>(Abrolhos)", "*C. auratus*<br>(Metro and SW)","*C. auricularis*<br>(Metro)",
-                    "*O. lineolatus*<br>(Metro)", "*C. auricularis*<br>(Abrolhos)", "*O. lineolatus*<br>(SW)")
+species.labels <- c("*L. nebulosus*<br>(Ningaloo)", "*E. armatus*<br>(Metro<br>and SW)", "*C. auratus*<br>(Metro<br>and SW)","*C. auricularis*<br>(Metro)",
+                    "*O. lineolata*<br>(Metro)", "*C. auricularis*<br>(Abrolhos)", "*O. lineolata*<br>(SW)")
 #### Make Plot ####
 
 condition_plot <- dat %>% 
@@ -67,9 +67,15 @@ ggsave(condition_plot, filename="Condition_plot.png", height = a4.width*1, width
 #* Load in data ####
 setwd(data_dir)
 SE_data <- read.csv("Nebulosus_lengths.csv")
-RT_data <-  readRDS("australian-synthesis_complete_length_lethrinus_miniatus.RDS") %>% 
-  dplyr::filter_all(.vars_predicate = any_vars(str_detect(.,"Abrolhos.MF|Abrolhos.WAMSI|05_Abrolhos_stereo"))) %>% 
-  dplyr::select(sample, campaign, latitude, longitude)  
+# RT_data <-  readRDS("australian-synthesis_complete_length_lethrinus_miniatus.RDS") %>% 
+#   dplyr::filter_all(.vars_predicate = any_vars(str_detect(.,"Abrolhos.MF|Abrolhos.WAMSI|05_Abrolhos_stereo"))) %>% 
+#   dplyr::select(sample, campaign, latitude, longitude)  
+BC_data <- readRDS("australian-synthesis_complete_length_epinephelides-armatus.RDS") %>% 
+  filter(length<MaxLen) %>% 
+  filter(campaign %in% c("2023-03_SwC_stereo-BRUVs","2020-10_south-west_stereo-BRUVs", "2020-06_south-west_stereo-BRUVs", "2019-02_NgariCapes_stereoBRUVs","2014-01_Capes_stereoBRUVs",
+                         "2014-12_Geographe.Bay_stereoBRUVs","2015-01_Capes_stereoBRUVs","2013-06_Rottnest.MF_stereoBRUVs", "2013-06_Warnbro_stereoBRUVs", "2013-01_Capes_stereoBRUVs",
+                         "2010-05_Capes.WAMSI_stereoBRUVs","2010-04_Rottnest.WAMSI_stereoBRUVs", "2010-04_TwoRocks.WAMSI_stereoBRUVs")) %>% 
+  dplyr::select(sample, campaign, latitude, longitude)
 PS_data <- readRDS("australian-synthesis_complete_length_chrysophrys_auratus.RDS") %>% 
   dplyr::filter_all(.vars_predicate = any_vars(str_detect(.,"2008|2009|2010|2011"))) %>% 
   dplyr::filter_all(.vars_predicate = any_vars(str_detect(.,"Marmion|TwoRocks|Two.Rocks|Capes|Geographe|SwC|south-west|Ngari|Warnbro|Rottnest"))) %>% 
@@ -90,7 +96,7 @@ setwd(sp_dir)
 e <- ext(110.8, 127, -36, -21)
 
 aus <- st_read("cstauscd_r.mif", crs=4283) %>% 
-  filter(FEAT_CODE %in% c("mainland", "island"))
+  filter(FEAT_CODE %in% c("mainland", "island")) 
 ausc <- st_crop(aus, e)
 aumpa <- st_read("AustraliaNetworkMarineParks.shp") 
 mpa <- st_crop(aumpa,e) %>% 
@@ -132,22 +138,30 @@ bathy <- rast("bath_250_good.tif") %>%
 
 #* Sort out metadata for Ningaloo ####
 setwd(data_dir)
-metadata_2015 <- read.csv("2015-08_Ningaloo_stereoBRUVs_length.csv")
+metadata_2015 <- metadata_2015 <- read.csv("2015-08_Ningaloo_stereoBRUVs_length.csv")
 metadata_2019 <- read.csv("ningaloo.complete.length.csv") %>% 
   mutate(sample = as.character(sample)) %>% 
   filter(genus %in% ("Lethrinus")) %>% 
   filter(species %in% c("nebulosus"))
+dbca_metadata <- readRDS("DBCA_lengths.RDS") %>% 
+  mutate(sample = as.character(sample)) %>% 
+  filter(scientific %in% "Lethrinus nebulosus")
 metadata_2022 <- readRDS("Ningaloo_PtCloates_BOSS-BRUV_dat_length.rds")
 
 SE_2019 <- SE_data %>% 
-  filter(!campaignid %in% c("2015-08_Ningaloo.lagoon.sanctuaries_stereoBRUVs","2015-08_Ningaloo.shallow.sanctuaries_stereoBRUVs")) %>% 
+  filter(campaignid %in% c("2019-08_Ningaloo.MP.Monitoring_stereoBRUVs", "2019-08_Ningaloo_stereo-BRUVs")) %>% 
   left_join(., metadata_2019, by=c("sample")) %>% 
+  left_join(., dbca_metadata, by=c("sample")) %>% 
   distinct(sample,.keep_all=TRUE) %>% 
-  dplyr::select(sample, campaignid.x, latitude, longitude) %>% 
-  rename(campaign = "campaignid.x")
+  mutate(latitude.x=ifelse(is.na(latitude.x), latitude.y, latitude.x),
+         longitude.x = ifelse(is.na(longitude.x), longitude.y, longitude.x)) %>% 
+  dplyr::select(sample, campaignid.x, latitude.x, longitude.x) %>% 
+  rename(campaign = "campaignid.x",
+         latitude = "latitude.x",
+         longitude = "longitude.x")
 
 SE_2015 <- SE_data %>% 
-  filter(campaignid %in% c("2015-08_Ningaloo.lagoon.sanctuaries_stereoBRUVs", "2015-08_Ningaloo.shallow.sanctuaries_stereoBRUVs")) %>% 
+  filter(campaignid %in% c("2015-08_Ningaloo.deep.sanctuaries_stereoBRUVs")) %>% 
   left_join(., metadata_2015, by=c("sample")) %>% 
   distinct(sample,.keep_all=TRUE) %>% 
   dplyr::select(sample, campaignid.x, latitude, longitude) %>% 
@@ -164,8 +178,9 @@ SE_data <- rbind(SE_2015, SE_2019, SE_2022)
 
 #* Put data all together ####
 
-Full_samples <- rbind(SE_data, RT_data, PS_data, WKW_data, MW_data) %>% 
-  rename(x = longitude, y = latitude)
+Full_samples <- rbind(SE_data, BC_data, PS_data, WKW_data, MW_data) %>% 
+  rename(x = longitude, y = latitude) %>% 
+  distinct(sample, .keep_all=TRUE)
 
 #* plot heat map of samples ####
 

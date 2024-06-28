@@ -9,7 +9,7 @@ a4.width=160
 
 # Simulate data
 SampleSize=5000 # sample size for retained catches (and same number for released fish, if an MLL is specified)
-set.seed(123)
+# set.seed(123)
 MaxAge = 30
 TimeStep = 0.5 # model timestep (e.g. 1 = annual, 1/12 = monthly)
 NatMort = 4.22/MaxAge
@@ -41,7 +41,6 @@ PropReleased = NA # proportion of fish released, vector including mean and sd (o
 midpt=Res$midpt
 lbnd=Res$lbnd
 ubnd=Res$ubnd
-length(ObsRetCatchFreqAtLen)
 length(midpt)
 InitFishMort = 0.25 # specify starting parameters
 InitFishMort_logit = log(InitFishMort/(1-InitFishMort)) # logit transform
@@ -50,6 +49,7 @@ InitDelta = 100
 params = c(InitFishMort_logit, log(InitL50), log(InitDelta))
 DistnType = 1
 ObsRetCatchFreqAtLen = Res$ObsRetCatchFreqAtLen
+length(ObsRetCatchFreqAtLen)
 
 FittedRes=GetLengthBasedCatchCurveResults(params, DistnType, GrowthCurveType, GrowthParams, RefnceAges, MLL, SelectivityType, ObsRetCatchFreqAtLen,
                                           lbnd, ubnd, midpt, SelectivityVec, PropReleased, ObsDiscCatchFreqAtLen, DiscMort, CVSizeAtAge, MaxAge, NatMort, TimeStep)
