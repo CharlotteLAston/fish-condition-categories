@@ -2,7 +2,7 @@
 .Rhistory
 .Rapp.history
 /Spatial_data
-/Data
+/Data/*
 
 # Session Data files
 .RData
