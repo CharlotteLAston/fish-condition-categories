@@ -35,15 +35,16 @@ dat <- data.frame(species=as.factor(c("L. nebulosus", "E. armatus ", "C. auratus
   mutate(condition = 1-(mortality/(mortality+nat.mort))) %>% 
   mutate(condition_upp = 1-(lwr_bnd/(lwr_bnd+nat.mort))) %>% 
   mutate(condition_lwr = 1-(upp_bnd/(upp_bnd+nat.mort))) %>% 
-  mutate(condition = ifelse(species %in% "Whole", 0.53, condition),
-         condition_upp = ifelse(species %in% "Whole", condition+0.04, condition_upp),
-         condition_lwr = ifelse(species %in% "Whole", condition-0.04, condition_lwr)) %>% 
+  mutate(condition = ifelse(species %in% "Whole", 	
+                            0.7166183, condition),
+         condition_upp = ifelse(species %in% "Whole", condition+0.01, condition_upp),
+         condition_lwr = ifelse(species %in% "Whole", condition-0.01, condition_lwr)) %>% 
   mutate(species.location=fct_relevel(species.location, "L. nebulosus_Ningaloo","E. armatus _Perth Metro and South West","C. auratus_Perth Metro and South West",
                                       "C. auricularis_Perth Metro", "O. lineolatus_Perth Metro", "C. auricularis_Abrolhos","O. lineolatus_South West", "Whole_region")) 
 
 #colours <- c("#88CBED", "#A9439A", "#332387", "#117633", "#43A999", "#872155", "#CB6778")
 species.labels <- c("*L. nebulosus*<br>(Ningaloo)", "*E. armatus*<br>(Metro<br>and SW)", "*C. auratus*<br>(Metro<br>and SW)","*C. auricularis*<br>(Metro)",
-                    "*O. lineolata*<br>(Metro)", "*C. auricularis*<br>(Abrolhos)", "*O. lineolata*<br>(SW)", "Whole Perth metro<br>and SW")
+                    "*O. lineolatus*<br>(Metro)", "*C. auricularis*<br>(Abrolhos)", "*O. lineolatus*<br>(SW)", "Whole Perth<br>metro and SW")
 #### Make Plot ####
 
 condition_plot <- dat %>% 
@@ -52,10 +53,13 @@ condition_plot <- dat %>%
   geom_rect(xmin=0, xmax=8.5,ymin=0.5, ymax=0.6, colour=NA, fill="#ffe599ff", alpha=0.15)+
   geom_rect(xmin=0, xmax=8.5,ymin=0.6, ymax=0.8, colour=NA, fill="#a4c2f4ff", alpha=0.15)+
   geom_rect(xmin=0, xmax=8.5,ymin=0.8, ymax=1, colour=NA, fill="#6aa84fff", alpha=0.15)+
+  geom_rect(xmin=0, xmax=7.5,ymin=0, ymax=1, colour=NA, fill="grey100", alpha=0.05)+
   geom_point(aes(x=species.location, y=condition, fill=species.location, colour=species.location))+
-  scale_fill_manual(values=c("grey20", "grey20", "grey20", "grey20", "grey20", "grey20", "grey20", "grey50"), guide="none")+
+  scale_fill_manual(values=c("grey20", "grey20", "grey20", "grey20", "grey20", "grey20", "grey20", "grey45"), guide="none")+
   geom_linerange(aes(x=species.location, ymax=condition_upp, ymin=condition_lwr, colour=species.location))+
-  scale_colour_manual(values=c("grey20", "grey20", "grey20", "grey20", "grey20", "grey20", "grey20", "grey50"), guide="none")+
+  scale_colour_manual(values=c("grey20", "grey20", "grey20", "grey20", "grey20", "grey20", "grey20", "grey45"), guide="none")+
+  geom_vline(xintercept = 7.5, colour="white", linewidth=1.5)+
+  geom_vline(xintercept = 1.5, colour="white", linewidth=1.5)+
   theme_classic()+
   scale_x_discrete(labels=species.labels)+
   ylim(0,1)+

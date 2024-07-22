@@ -36,9 +36,9 @@ dat <- data.frame(species=as.factor(c("L. nebulosus","E. armatus ", "C. auratus"
   mutate(condition_upp = 1-(lwr_bnd/(lwr_bnd+nat.mort))) %>% 
   mutate(condition_lwr = 1-(upp_bnd/(upp_bnd+nat.mort))) %>% 
   mutate(variance = (condition_lwr+condition_upp)/2) %>% 
-  group_by(species) %>% 
-  mutate(average = mean(condition)) %>% 
-  ungroup() %>% 
+  # group_by(species) %>% 
+  # mutate(average = mean(condition)) %>% 
+  # ungroup() %>% 
   distinct(species, .keep_all=T) %>% 
   filter(!species %in% "L. nebulosus") %>%
   mutate(max.length = c(500,1130,397,400),
@@ -46,7 +46,7 @@ dat <- data.frame(species=as.factor(c("L. nebulosus","E. armatus ", "C. auratus"
   as.data.frame()
   
 
-Model1=gam(average~s(max.length,bs='cr',k=1), family=gaussian(), data=dat, weights = 1/variance)
+Model1=gam(condition~s(max.length,bs='cr',k=1), family=gaussian(), data=dat, weights = 1/variance)
 
 cont.preds = c("max.length", "trophic.level")
 out.all     <- list()
@@ -77,7 +77,10 @@ names(var.imp) <- cont.preds
 all.mod.fits   <- do.call("rbind",out.all)
 all.var.imp    <- do.call("rbind",var.imp)
 
-testdata <- expand.grid(max.length=seq(min(Model1$model$max.length), max(Model1$model$max.length), length=20)) %>%
+dat.new <- dat %>% 
+  distinct(species, .keep_all=T)
+
+testdata <- expand.grid(max.length=mean(dat.new$max.length)) %>%
   
   distinct()%>%
   glimpse()
